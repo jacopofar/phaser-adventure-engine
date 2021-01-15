@@ -1,2 +1,4 @@
-const a:string = 'Ciaone';
-window.alert(a)
+const button = document.getElementById("test-button");
+button.addEventListener("click", (event) => {
+  window.alert('Yep, you clicked')
+});
