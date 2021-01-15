@@ -9,6 +9,10 @@
   },
   "scripts": {
     "dev-build": "node_modules/.bin/webpack --mode=development",
-    "dev-serve": "node_modules/.bin/webpack serve --open --mode=development"
+    "dev-serve": "node_modules/.bin/webpack serve --open --mode=development",
+    "prod-build": "node_modules/.bin/webpack --mode=production"
+  },
+  "dependencies": {
+    "phaser": "^3.52.0"
   }
 }
