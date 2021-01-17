@@ -17,14 +17,14 @@ export class MainScene extends Phaser.Scene {
 
   update(): void {
     if (this.cursors.left.isDown || this.cursors.right.isDown){
-      this.player.setVelocityX(this.cursors.left.isDown ? -100 : 100);
+      this.player.setVelocityX(this.cursors.left.isDown ? -128 : 128);
     }
     else {
       this.player.setVelocityX(0);
     }
 
     if (this.cursors.up.isDown || this.cursors.down.isDown){
-      this.player.setVelocityY(this.cursors.up.isDown ? -100 : 100);
+      this.player.setVelocityY(this.cursors.up.isDown ? -128 : 128);
     }
     else {
       this.player.setVelocityY(0);

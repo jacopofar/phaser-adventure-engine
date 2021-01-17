@@ -34,7 +34,12 @@ module.exports = {
     new HtmlWebpackPlugin()
   ],
   output: {
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
+  }
 };
