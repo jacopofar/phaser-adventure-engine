@@ -1,4 +1,6 @@
 const path = require('path');
+
+const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -14,15 +16,22 @@ module.exports = {
         use: 'ts-loader',
         exclude: /node_modules/,
       },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        use: 'raw-loader'
+      },
     ],
   },
   resolve: {
     extensions: [ '.ts', '.js' ],
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: 'src/index.html'
-    })
+    new CopyPlugin({
+      patterns: [
+        { from: "assets", to: "assets" },
+      ],
+    }),
+    new HtmlWebpackPlugin()
   ],
   output: {
     filename: 'bundle.js',

@@ -1,9 +1,12 @@
-// not used yet really
 import 'phaser';
+import { GameConfig } from './config';
 
+export class Game extends Phaser.Game {
+  constructor(config: Phaser.Types.Core.GameConfig) {
+    super(config);
+  }
+}
 
-const button = document.getElementById("test-button");
-button.addEventListener("click", (event) => {
-  window.alert('Yep, you clicked');
-  return false;
+window.addEventListener('load', () => {
+  const game = new Game(GameConfig);
 });
