@@ -1,4 +1,6 @@
 import 'phaser';
+const axios = require('axios').default;
+
 import { GameConfig } from './config';
 
 export class Game extends Phaser.Game {
@@ -7,6 +9,13 @@ export class Game extends Phaser.Game {
   }
 }
 
-window.addEventListener('load', () => {
-  const game = new Game(GameConfig);
+window.addEventListener('load', async () => {
+  try {
+    const response = await axios.get('/game/game.json');
+    const game = new Game(GameConfig(response.data));
+  }
+  catch(error) {
+    window.alert('Error loading game manifest :-(');
+    console.error(error)
+  }
 });

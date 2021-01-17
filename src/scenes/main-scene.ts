@@ -1,3 +1,5 @@
+import 'phaser';
+
 export class MainScene extends Phaser.Scene {
   private player: Phaser.Physics.Arcade.Sprite;
   private demo_world: Phaser.Physics.Arcade.Sprite;

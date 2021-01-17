@@ -1,10 +1,15 @@
 import { MainScene } from './scenes/main-scene';
 
-export const GameConfig: Phaser.Types.Core.GameConfig = {
+type ExternalConfig = {
+  gameWidth: number,
+  gameHeight: number,
+}
+
+export const GameConfig = (config: ExternalConfig):Phaser.Types.Core.GameConfig => ({
   title: 'Chunked tiles 2d game',
   version: '0.1',
-  width: 800,
-  height: 600,
+  width: config.gameWidth,
+  height: config.gameHeight,
   type: Phaser.AUTO,
   parent: 'game',
   physics: {
@@ -14,4 +19,4 @@ export const GameConfig: Phaser.Types.Core.GameConfig = {
     }
   },
   scene: [MainScene]
-};
+});

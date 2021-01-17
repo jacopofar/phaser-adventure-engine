@@ -28,7 +28,7 @@ module.exports = {
   plugins: [
     new CopyPlugin({
       patterns: [
-        { from: "assets", to: "assets" },
+        { from: "game", to: "game" },
       ],
     }),
     new HtmlWebpackPlugin()
