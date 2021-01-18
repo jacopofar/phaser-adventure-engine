@@ -1,4 +1,4 @@
-import { GameConfig } from './config';
+import { GameConfig } from '../config';
 
 test('adds 2 + 2 to equal 4, Winston', () => {
   expect(2 + 2).toBe(4);
