@@ -18,5 +18,5 @@ export const GameConfig = (config: ExternalConfig):Phaser.Types.Core.GameConfig 
         debug: true
     }
   },
-  scene: [MainScene]
+  scene: [MainScene],
 });

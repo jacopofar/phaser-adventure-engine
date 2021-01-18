@@ -1,5 +1,7 @@
 import 'phaser';
 
+import { Chunk } from '../tiling/chunk';
+
 export class MainScene extends Phaser.Scene {
   private player: Phaser.Physics.Arcade.Sprite;
   private demo_world: Phaser.Physics.Arcade.Sprite;
@@ -11,16 +13,14 @@ export class MainScene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.spritesheet('player', 'assets/sprites/MainGuySpriteSheet.png', { frameWidth: 32, frameHeight: 32 });
-    this.load.spritesheet('world_example', 'assets/sprites/wood_tileset.png', { frameWidth: 32, frameHeight: 32 });
+    this.load.spritesheet('player', 'game/sprites/MainGuySpriteSheet.png', { frameWidth: 32, frameHeight: 32 });
   }
 
   create(): void {
     this.player = this.physics.add.sprite(400, 300, 'player');
     this.cursors = this.input.keyboard.createCursorKeys();
     this.cameras.main.startFollow(this.player, false, 0.1, 0.1);
-
-    this.demo_world = this.physics.add.sprite(300, 200, 'world_example');
+    const chunk = new Chunk(this, 'game/maps/first/just_a_chunk.json', 12, 34);
 
   }
 
