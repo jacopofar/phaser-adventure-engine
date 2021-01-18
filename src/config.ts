@@ -5,7 +5,7 @@ type ExternalConfig = {
   gameHeight: number,
 }
 
-export const GameConfig = (config: ExternalConfig):Phaser.Types.Core.GameConfig => ({
+export const PhaserConfig = (config: ExternalConfig):Phaser.Types.Core.GameConfig => ({
   title: 'Chunked tiles 2d game',
   version: '0.1',
   width: config.gameWidth,

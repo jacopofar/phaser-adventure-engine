@@ -29,11 +29,11 @@ type TilesetData = {
  */
 export class Chunk {
   private properties: ChunkProperties;
-  private sprites: Phaser.Physics.Arcade.Sprite[] = [];
+  private sprites: Phaser.GameObjects.Image[] = [];
 
 
   constructor(targetScene: Phaser.Scene, mapPath: string, x: integer, y: integer) {
-    this.loadMap(targetScene, mapPath, x, y)
+    this.loadMap(targetScene, mapPath, x, y);
   }
 
   private getTilesIndexes = async(targetScene: Phaser.Scene, mapPath: string, tilesets: TilesetData[]): Promise<Record<number, [string, number]>> => {
@@ -59,6 +59,7 @@ export class Chunk {
     this.properties = {height, width, tilewidth, tileheight};
 
     // first step: load all the tilesets and calculate their map ids
+    // note: this loads the tilesets in the Phaser scene if not there already
     const transl = await this.getTilesIndexes(targetScene, mapPath, mapData.tilesets);
 
     // second step: load the layers using the mapping above
@@ -74,11 +75,10 @@ export class Chunk {
           continue;
         }
         const tile = transl[tid];
-        //TODO add collisions, do not use physics sprite when not needed
         const tx = x + (idx % width) * tilewidth;
         const ty = x + Math.floor(idx / height) * tileheight;
 
-        this.sprites.push(targetScene.physics.add.sprite(tx, ty, tile[0], tile[1]))
+        this.sprites.push(targetScene.add.image(tx, ty, tile[0], tile[1]))
       }
     }
     // now all sprites are shown, and a reference to them is kept in this.sprites for later deletion
