@@ -1,5 +1,6 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
-  roots: ["src"]
+  roots: ["src"],
+  collectCoverage: true
 };
