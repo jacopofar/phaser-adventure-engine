@@ -63,7 +63,10 @@ export class Chunk {
     const transl = await this.getTilesIndexes(targetScene, mapPath, mapData.tilesets);
 
     // second step: load the layers using the mapping above
+    let layerDepth = -Math.floor(mapData.layers.length / 2);
     for(let layer of mapData.layers) {
+      layerDepth += 1;
+      // console.log('Drawing layer at depth', layerDepth * 10);
       if (layer.type !== "tilelayer") {
         continue;
       }
@@ -77,8 +80,9 @@ export class Chunk {
         const tile = transl[tid];
         const tx = x + (idx % width) * tilewidth;
         const ty = x + Math.floor(idx / height) * tileheight;
-
-        this.sprites.push(targetScene.add.image(tx, ty, tile[0], tile[1]))
+        const img = targetScene.add.image(tx, ty, tile[0], tile[1]);
+        img.setDepth(layerDepth * 10);
+        this.sprites.push(img);
       }
     }
     // now all sprites are shown, and a reference to them is kept in this.sprites for later deletion
