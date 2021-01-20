@@ -21,7 +21,7 @@ export class MainScene extends Phaser.Scene {
     this.player.setDepth(1);
     this.cursors = this.input.keyboard.createCursorKeys();
     this.cameras.main.startFollow(this.player);
-    const chunk = new Chunk(this, 'game/maps/first/just_a_chunk.json', 0, 0);
+    const chunk = new Chunk(this, 'game/maps/second/chunk_0_0.json', 0, 0);
 
   }
 
