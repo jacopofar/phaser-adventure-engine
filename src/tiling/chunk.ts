@@ -1,7 +1,7 @@
 import 'phaser';
 const axios = require('axios').default;
 
-import { getTileset } from './tilesets'
+import { getTileset } from './tilesets';
 
 /**
  * The map properties, using the same names as the Tiled JSON
@@ -51,6 +51,7 @@ export class Chunk {
   }
 
   loadMap = async (targetScene: Phaser.Scene, mapPath: string, x: integer, y: integer): Promise<void> => {
+    console.log('Loading chunk at ', mapPath, ' for coords', x, ' ', y);
     const mapData = (await axios.get(mapPath)).data;
     // TODO here would be nice to check for the map format
     // (e.g. is it orthogonal? compressed? wrong renderorder?) and raise clear errors if needed
@@ -86,5 +87,10 @@ export class Chunk {
       }
     }
     // now all sprites are shown, and a reference to them is kept in this.sprites for later deletion
-  }
+  };
+
+  unload = () => {
+    this.sprites.forEach(s => s.destroy());
+    this.sprites = [];
+  };
 }
