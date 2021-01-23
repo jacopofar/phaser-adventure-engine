@@ -31,11 +31,6 @@ export class Chunk {
   private properties: ChunkProperties;
   private sprites: Phaser.GameObjects.Image[] = [];
 
-
-  constructor(targetScene: Phaser.Scene, mapPath: string, x: integer, y: integer) {
-    this.loadMap(targetScene, mapPath, x, y);
-  }
-
   private getTilesIndexes = async(targetScene: Phaser.Scene, mapPath: string, tilesets: TilesetData[]): Promise<Record<number, [string, number]>> => {
     // TODO: often they'll be the same for many chunks, so
     // could be cached? Tricky because the tileset has to remain valid in Phaser
@@ -80,7 +75,7 @@ export class Chunk {
         }
         const tile = transl[tid];
         const tx = x + (idx % width) * tilewidth;
-        const ty = x + Math.floor(idx / height) * tileheight;
+        const ty = y + Math.floor(idx / height) * tileheight;
         const img = targetScene.add.image(tx, ty, tile[0], tile[1]);
         img.setDepth(layerDepth * 10);
         this.sprites.push(img);

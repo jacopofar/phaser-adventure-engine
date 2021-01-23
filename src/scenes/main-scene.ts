@@ -19,13 +19,16 @@ export class MainScene extends Phaser.Scene {
   }
 
   async create(): Promise<void> {
+    // first pause, or it will invoke update() before the chunkmanager even loaded the world
+    this.scene.pause();
     this.player = this.physics.add.sprite(400, 300, 'player');
     this.player.setDepth(1);
     this.cursors = this.input.keyboard.createCursorKeys();
     this.cameras.main.startFollow(this.player);
-    // const chunk = new Chunk(this, 'game/maps/second/chunk_0_0.json', 0, 0);
     this.chunkManager = new ChunkManager();
     await this.chunkManager.loadWorld('game/maps/second/world.world');
+    //now the world data is loaded, the chunkmanager will load the needed chunks during the update()
+    this.scene.resume();
   }
 
   async update(): Promise<void> {
@@ -42,6 +45,6 @@ export class MainScene extends Phaser.Scene {
     else {
       this.player.setVelocityY(0);
     }
-    this.chunkManager.handleNewPosition(this, this.player.x, this.player.y);
+    await this.chunkManager.handleNewPosition(this, this.player.x, this.player.y);
   }
 }
