@@ -31,13 +31,13 @@ export class Chunk {
   private properties: ChunkProperties;
   private sprites: Phaser.GameObjects.Image[] = [];
 
-  private getTilesIndexes = async(targetScene: Phaser.Scene, mapPath: string, tilesets: TilesetData[]): Promise<Record<number, [string, number]>> => {
+  private getTilesIndexes = async(loader: Phaser.Loader.LoaderPlugin, mapPath: string, tilesets: TilesetData[]): Promise<Record<number, [string, number]>> => {
     // TODO: often they'll be the same for many chunks, so
     // could be cached? Tricky because the tileset has to remain valid in Phaser
     let transl: Record<integer, [string, integer]> = {};
     const base = mapPath.slice(0, mapPath.lastIndexOf('/') + 1);
     for(let tileset of tilesets) {
-      let spritesheet = await getTileset(targetScene, base + tileset.source);
+      let spritesheet = await getTileset(loader, base + tileset.source);
       for (let i=0; i < spritesheet.size; i++) {
         transl[tileset.firstgid + i] = [spritesheet.name, i];
       }
@@ -56,7 +56,7 @@ export class Chunk {
 
     // first step: load all the tilesets and calculate their map ids
     // note: this loads the tilesets in the Phaser scene if not there already
-    const transl = await this.getTilesIndexes(targetScene, mapPath, mapData.tilesets);
+    const transl = await this.getTilesIndexes(targetScene.load, mapPath, mapData.tilesets);
 
     // second step: load the layers using the mapping above
     let layerDepth = -Math.floor(mapData.layers.length / 2);

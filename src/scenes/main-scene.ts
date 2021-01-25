@@ -4,10 +4,7 @@ import { ChunkManager } from '../tiling/chunk_manager';
 
 export class MainScene extends Phaser.Scene {
   private player: Phaser.Physics.Arcade.Sprite;
-  private demo_world: Phaser.Physics.Arcade.Sprite;
-
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-
   private chunkManager: ChunkManager;
 
   constructor() {
@@ -25,6 +22,9 @@ export class MainScene extends Phaser.Scene {
     this.player.setDepth(1);
     this.cursors = this.input.keyboard.createCursorKeys();
     this.cameras.main.startFollow(this.player);
+    // this is to avoid the pixel aliasing (appears as a border on every tile when moving)
+    // note that it is also available as option in startFollow()
+    this.cameras.main.setRoundPixels(true);
     this.chunkManager = new ChunkManager();
     await this.chunkManager.loadWorld('game/maps/second/world.world');
     //now the world data is loaded, the chunkmanager will load the needed chunks during the update()
