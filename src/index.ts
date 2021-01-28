@@ -12,7 +12,7 @@ export class Game extends Phaser.Game {
 window.addEventListener('load', async () => {
   try {
     const response = await axios.get('/game/game.json');
-    const game = new Game(PhaserConfig(response.data));
+    new Game(PhaserConfig(response.data));
   }
   catch(error) {
     window.alert('Error loading game manifest :-(');
