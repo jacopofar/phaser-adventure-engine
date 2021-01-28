@@ -29,13 +29,30 @@ describe('Tileset retrieval', () => {
       let request = moxios.requests.mostRecent();
       request.respondWith({
         status: 200,
-        response: {e : 42},
+        response: {
+          image: "image_name.png",
+          tileheight: 32,
+          tilewidth: 32,
+          someProperty: 42,
+          imageheight: 512,
+          imagewidth: 512
+        },
       });
     });
     // this double casting is necessary to create a fake loader without mocking the whole galaxy
     // but still having TS accept it
     await getTileset(loader as unknown as Phaser.Loader.LoaderPlugin, '/hello/folder1/tileset_name.json');
     expect(moxios.requests.mostRecent().url).toBe('/hello/folder1/tileset_name.json');
-
+    // requested a single spritesheet
+    expect(loader.spritesheet.mock.calls.length).toBe(1);
+    expect(loader.spritesheet.mock.calls[0]).toEqual([
+      "/hello/folder1/tileset_name.json",
+      "/hello/folder1/image_name.png",
+      {"frameHeight": 32, "frameWidth": 32}
+    ]);
+    // triggered the load queue start
+    expect(loader.start.mock.calls.length).toBe(1);
   });
+  //TODO:
+  // check the case of missing tileset JSON and associated error
 });
