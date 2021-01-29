@@ -23,5 +23,4 @@ These are used to develop and test the application.
 * webpack: build the project, handling assets, transpiling and whatnot
 * webpack-cli: necessary to invoke the build steps from the tasks in package.json
 * webpack-dev-server: runs an HTTP server with automatic reload upon changes
-* moxios: mocks axios requests for testing
-* @types/moxios: TS types for moxios
+* axios-mock-adapter: mocks axios requests for testing
