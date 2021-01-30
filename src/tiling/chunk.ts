@@ -6,16 +6,6 @@ import { getTileset } from './tilesets';
 /**
  * The map properties, using the same names as the Tiled JSON
 */
-type ChunkProperties = {
-  height: integer;
-  width: integer;
-  tilewidth: integer;
-  tileheight: integer;
-};
-
-/**
- * The map properties, using the same names as the Tiled JSON
-*/
 type TilesetData = {
   firstgid: integer;
   source: string;
@@ -28,7 +18,6 @@ type TilesetData = {
  * A chunk is a portion of the map small enough to easily fit in memory.
  */
 export class Chunk {
-  private properties: ChunkProperties;
   private sprites: Phaser.GameObjects.Image[] = [];
 
   private async getTilesIndexes(loader: Phaser.Loader.LoaderPlugin, mapPath: string, tilesets: TilesetData[]): Promise<Record<number, [string, number]>> {
@@ -46,13 +35,12 @@ export class Chunk {
   }
 
   async loadMap (targetScene: Phaser.Scene, mapPath: string, x: integer, y: integer): Promise<void> {
-    console.log('Loading chunk at ', mapPath, ' for coords', x, ' ', y);
+    // console.log('Loading chunk at ', mapPath, ' for coords', x, ' ', y);
     const mapData = (await axios.get(mapPath)).data;
     // TODO here would be nice to check for the map format
     // (e.g. is it orthogonal? compressed? wrong renderorder?) and raise clear errors if needed
     // this could be useful: https://github.com/gcanti/io-ts
     const {height, width, tilewidth, tileheight} = mapData;
-    this.properties = {height, width, tilewidth, tileheight};
 
     // first step: load all the tilesets and calculate their map ids
     // note: this loads the tilesets in the Phaser scene if not there already

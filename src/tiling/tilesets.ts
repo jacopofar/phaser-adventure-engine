@@ -23,7 +23,7 @@ export const getTileset = async (loader: Phaser.Loader.LoaderPlugin, path: strin
     });
   });
   loader.spritesheet(path, imagePath, { frameWidth: data.tilewidth, frameHeight: data.tileheight});
-  console.log('Loading tileset', imagePath, 'of size', size);
+  // console.log('Loading tileset', imagePath, 'of size', size);
   // so far the request was queued, we need to start the loader
   // https://photonstorm.github.io/phaser3-docs/Phaser.Loader.LoaderPlugin.html
   loader.start();

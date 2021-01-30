@@ -60,7 +60,7 @@ export class ChunkManager {
     const {pathPre, pathMiddle, pathPost} = ChunkManager.partsFromRegex(worldData.patterns[0].regexp, worldPath);
     const {multiplierX, multiplierY, offsetX, offsetY} = worldData.patterns[0];
     this.world = {pathPre, pathMiddle, pathPost, multiplierX, multiplierY, offsetX, offsetY};
-    console.log('World loaded:', this.world);
+    // console.log('World loaded:', this.world);
   };
 
   async handleNewPosition(targetScene: Phaser.Scene, x: integer, y: integer) {
@@ -71,7 +71,7 @@ export class ChunkManager {
       this.latestPosX = x;
       this.latestPosY = y;
     }
-    console.log('Handling new position, currently loaded:', Object.keys(this.loadedChunks));
+    // console.log('Handling new position, currently loaded:', Object.keys(this.loadedChunks));
     let curChunkX = Math.floor((x - this.world.offsetX) / this.world.multiplierX);
     let curChunkY = Math.floor((y - this.world.offsetY) / this.world.multiplierY);
 
