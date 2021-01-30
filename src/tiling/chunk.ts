@@ -31,7 +31,7 @@ export class Chunk {
   private properties: ChunkProperties;
   private sprites: Phaser.GameObjects.Image[] = [];
 
-  private getTilesIndexes = async(loader: Phaser.Loader.LoaderPlugin, mapPath: string, tilesets: TilesetData[]): Promise<Record<number, [string, number]>> => {
+  private async getTilesIndexes(loader: Phaser.Loader.LoaderPlugin, mapPath: string, tilesets: TilesetData[]): Promise<Record<number, [string, number]>> {
     // TODO: often they'll be the same for many chunks, so
     // could be cached? Tricky because the tileset has to remain valid in Phaser
     let transl: Record<integer, [string, integer]> = {};
@@ -45,7 +45,7 @@ export class Chunk {
     return transl;
   }
 
-  loadMap = async (targetScene: Phaser.Scene, mapPath: string, x: integer, y: integer): Promise<void> => {
+  async loadMap (targetScene: Phaser.Scene, mapPath: string, x: integer, y: integer): Promise<void> {
     console.log('Loading chunk at ', mapPath, ' for coords', x, ' ', y);
     const mapData = (await axios.get(mapPath)).data;
     // TODO here would be nice to check for the map format
@@ -84,7 +84,7 @@ export class Chunk {
     // now all sprites are shown, and a reference to them is kept in this.sprites for later deletion
   };
 
-  unload = () => {
+  unload() {
     this.sprites.forEach(s => s.destroy());
     this.sprites = [];
   };

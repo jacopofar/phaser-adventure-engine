@@ -47,7 +47,7 @@ export class ChunkManager {
   }
 
 
-  loadWorld = async (worldPath: string): Promise<void> => {
+  async loadWorld (worldPath: string): Promise<void> {
     const worldData = (await axios.get(worldPath)).data;
     if (worldData.type  !== "world") {
       throw Error(`This file is not a world file: ${worldPath}. It has no type=world`);
@@ -63,7 +63,7 @@ export class ChunkManager {
     console.log('World loaded:', this.world);
   };
 
-  handleNewPosition = async (targetScene: Phaser.Scene, x: integer, y: integer) => {
+  async handleNewPosition(targetScene: Phaser.Scene, x: integer, y: integer) {
     if (typeof this.latestPosX !== 'undefined' && Math.sqrt((this.latestPosX - x) ** 2 + (this.latestPosY - y) ** 2) < this.reactionDistance) {
       return;
     }
@@ -122,7 +122,7 @@ export class ChunkManager {
 
 
 
-  static partsFromRegex = (regex: string, worldPath: string): {pathPre: string, pathMiddle: string, pathPost: string} => {
+  static partsFromRegex (regex: string, worldPath: string): {pathPre: string, pathMiddle: string, pathPost: string} {
     const worldFolder = worldPath.slice(0, worldPath.lastIndexOf('/') + 1);
 
     let parts = regex.split(/[\(\)]/);
