@@ -78,5 +78,28 @@ describe('Single chunk retrieval', () => {
 
   });
 
+
+  test('shows placehoplder when a map is missing', async () => {
+    axiosMock.onGet('/game/maps/map1/chunk_1_-4.json').reply(404);
+    const mockAddImage = jest.fn();
+    const mockAddText = jest.fn();
+
+    const scene = {
+      load: "a fake loader",
+      add: {
+        image: mockAddImage,
+        text: mockAddText
+      }
+    } as unknown as Phaser.Scene;
+
+    const c = new Chunk();
+    await c.loadMap(scene, '/game/maps/map1/chunk_1_-4.json', -10, 42);
+    expect(axiosMock.history.get[0].url).toBe('/game/maps/map1/chunk_1_-4.json');
+
+    // no sprites were added
+    expect(mockAddImage.mock.calls).toEqual([]);
+    // but warning text was, how many times is not important
+    expect(mockAddText.mock.calls.length).toBeGreaterThan(0);
+  });
 });
 
