@@ -2,6 +2,7 @@ import "phaser";
 const axios = require("axios").default;
 
 import { getTileset } from "./tilesets";
+import { WorldScene } from "../scenes/main-scene";
 
 /**
  * The map properties, using the same names as the Tiled JSON
@@ -11,13 +12,18 @@ type TilesetData = {
   source: string;
 };
 
+type ShownElement =
+  | Phaser.GameObjects.Image
+  | Phaser.GameObjects.Text
+  | Phaser.Types.Physics.Arcade.SpriteWithStaticBody;
+
 /**
  * An helper class to handle a chunk of tiles in a map.
  *
  * A chunk is a portion of the map small enough to easily fit in memory.
  */
 export class Chunk {
-  private sprites: (Phaser.GameObjects.Image | Phaser.GameObjects.Text)[] = [];
+  private sprites: ShownElement[] = [];
 
   private async getTilesIndexes(
     loader: Phaser.Loader.LoaderPlugin,
@@ -38,7 +44,7 @@ export class Chunk {
   }
 
   async loadMap(
-    targetScene: Phaser.Scene,
+    targetScene: WorldScene,
     mapPath: string,
     x: integer,
     y: integer
@@ -95,7 +101,13 @@ export class Chunk {
         const tile = transl[tid];
         const tx = x + (idx % width) * tilewidth;
         const ty = y + Math.floor(idx / height) * tileheight;
-        const img = targetScene.add.image(tx, ty, tile[0], tile[1]);
+        let img: ShownElement;
+        // TODO this was a test logic, should be based on the tileset collision property
+        if (tid % 2 == 9000) {
+          img = targetScene.addObstacle(tx, ty, tile[0], tile[1]);
+        } else {
+          img = targetScene.add.image(tx, ty, tile[0], tile[1]);
+        }
         // multiplied by 10 to allow intermediate levels to be added more easily as if it was BASIC
         img.setDepth(layerDepth * 10);
         // reference to the sprites for later deletion

@@ -2,6 +2,7 @@ import "phaser";
 const axios = require("axios").default;
 
 import { Chunk } from "./chunk";
+import { WorldScene } from "../scenes/main-scene";
 
 /**
  * The world properties, using the same names as the Tiled JSON for *.world files
@@ -85,7 +86,7 @@ export class ChunkManager {
     // console.log('World loaded:', this.world);
   }
 
-  async handleNewPosition(targetScene: Phaser.Scene, x: integer, y: integer) {
+  async handleNewPosition(targetScene: WorldScene, x: integer, y: integer) {
     if (
       typeof this.latestPosX !== "undefined" &&
       Math.sqrt((this.latestPosX - x) ** 2 + (this.latestPosY - y) ** 2) <

@@ -2,7 +2,9 @@ import "phaser";
 
 import { ChunkManager } from "../tiling/chunk_manager";
 
-export class MainScene extends Phaser.Scene {
+export class WorldScene extends Phaser.Scene {
+  public obstacles: Phaser.Physics.Arcade.StaticGroup;
+
   private player: Phaser.Physics.Arcade.Sprite;
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   private chunkManager: ChunkManager;
@@ -22,6 +24,12 @@ export class MainScene extends Phaser.Scene {
     // first pause, or it will invoke update() before the chunkmanager even loaded the world
     this.scene.pause();
     this.player = this.physics.add.sprite(400, 300, "player");
+    this.obstacles = this.physics.add.staticGroup();
+    // TODO: this will later handle the logic for the game interaction
+    this.physics.add.collider(this.player, this.obstacles, (a, b) => {
+      console.log("collision between", a, b);
+    });
+
     this.player.setDepth(1);
     this.cursors = this.input.keyboard.createCursorKeys();
     this.cameras.main.startFollow(this.player);
@@ -32,6 +40,21 @@ export class MainScene extends Phaser.Scene {
     await this.chunkManager.loadWorld("game/maps/second/world.world");
     //now the world data is loaded, the chunkmanager will load the needed chunks during the update()
     this.scene.resume();
+  }
+
+  /**
+   * Add and return a static body and a sprite.
+   *
+   */
+  addObstacle(
+    x: integer,
+    y: integer,
+    texture: string,
+    frame: integer
+  ): Phaser.Types.Physics.Arcade.SpriteWithStaticBody {
+    const img = this.physics.add.staticSprite(x, y, texture, frame);
+    this.obstacles.add(img);
+    return img;
   }
 
   async update(): Promise<void> {

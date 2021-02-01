@@ -1,8 +1,8 @@
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
-import "phaser";
 import { Chunk } from "../tiling/chunk";
 import { getTileset } from "../tiling/tilesets";
+import { WorldScene } from "../scenes/main-scene";
 
 jest.mock("../tiling/tilesets");
 const axiosMock = new MockAdapter(axios);
@@ -51,12 +51,16 @@ describe("Single chunk retrieval", () => {
     const mockAddImage = jest.fn();
     const setDepth = jest.fn();
     mockAddImage.mockReturnValue({ setDepth });
+    const mockAddObstacle = jest.fn();
+    mockAddObstacle.mockReturnValue({ setDepth });
+
     const scene = ({
       load: "a fake loader",
       add: {
         image: mockAddImage,
       },
-    } as unknown) as Phaser.Scene;
+      addObstacle: mockAddObstacle,
+    } as unknown) as WorldScene;
 
     const c = new Chunk();
     await c.loadMap(scene, "/game/maps/map1/chunk_1_-4.json", -10, 42);
@@ -81,6 +85,7 @@ describe("Single chunk retrieval", () => {
     axiosMock.onGet("/game/maps/map1/chunk_1_-4.json").reply(404);
     const mockAddImage = jest.fn();
     const mockAddText = jest.fn();
+    const mockAddObstacle = jest.fn();
 
     const scene = ({
       load: "a fake loader",
@@ -88,7 +93,8 @@ describe("Single chunk retrieval", () => {
         image: mockAddImage,
         text: mockAddText,
       },
-    } as unknown) as Phaser.Scene;
+      addObstacle: mockAddObstacle,
+    } as unknown) as WorldScene;
 
     const c = new Chunk();
     await c.loadMap(scene, "/game/maps/map1/chunk_1_-4.json", -10, 42);

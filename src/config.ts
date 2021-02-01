@@ -1,4 +1,4 @@
-import { MainScene } from "./scenes/main-scene";
+import { WorldScene } from "./scenes/main-scene";
 
 type ExternalConfig = {
   gameWidth: number;
@@ -20,5 +20,5 @@ export const PhaserConfig = (
       debug: true,
     },
   },
-  scene: [MainScene],
+  scene: [WorldScene],
 });

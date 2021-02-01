@@ -3,6 +3,7 @@ import MockAdapter from "axios-mock-adapter";
 import "phaser";
 import { Chunk } from "../tiling/chunk";
 import { ChunkManager } from "../tiling/chunk_manager";
+import { WorldScene } from "../scenes/main-scene";
 
 jest.mock("../tiling/chunk");
 const axiosMock = new MockAdapter(axios);
@@ -67,15 +68,15 @@ describe("ChunkManager dynamic retrieval", () => {
     });
     const cm = new ChunkManager(2000, 3000, 10);
     await cm.loadWorld("/game/maps/map1/someworld.world");
-    await cm.handleNewPosition(scene as Phaser.Scene, 0, 42);
+    await cm.handleNewPosition(scene as WorldScene, 0, 42);
     expect(axiosMock.history.get.length).toBe(1);
     // it loaded the first 9 chunks around the player
     expect(Chunk).toHaveBeenCalledTimes(9);
     // a small movement, should not load anything
-    await cm.handleNewPosition(scene as Phaser.Scene, 4, 42);
+    await cm.handleNewPosition(scene as WorldScene, 4, 42);
     expect(Chunk).toHaveBeenCalledTimes(9);
     // bigger movement, load some more
-    await cm.handleNewPosition(scene as Phaser.Scene, 1000, 42);
+    await cm.handleNewPosition(scene as WorldScene, 1000, 42);
     expect(Chunk).toHaveBeenCalledTimes(9);
   });
 });
