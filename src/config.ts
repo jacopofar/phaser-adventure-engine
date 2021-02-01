@@ -1,22 +1,24 @@
-import { MainScene } from './scenes/main-scene';
+import { MainScene } from "./scenes/main-scene";
 
 type ExternalConfig = {
-  gameWidth: number,
-  gameHeight: number,
-}
+  gameWidth: number;
+  gameHeight: number;
+};
 
-export const PhaserConfig = (config: ExternalConfig):Phaser.Types.Core.GameConfig => ({
-  title: 'Chunked tiles 2d game',
-  version: '0.1',
+export const PhaserConfig = (
+  config: ExternalConfig
+): Phaser.Types.Core.GameConfig => ({
+  title: "Chunked tiles 2d game",
+  version: "0.1",
   width: config.gameWidth,
   height: config.gameHeight,
   type: Phaser.AUTO,
-  parent: 'game',
+  parent: "game",
   physics: {
-    default: 'arcade',
+    default: "arcade",
     arcade: {
-        debug: true
-    }
+      debug: true,
+    },
   },
   scene: [MainScene],
 });

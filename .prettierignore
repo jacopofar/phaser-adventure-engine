@@ -1,0 +1,8 @@
+# Ignore artifacts:
+dist
+coverage
+# should be automatic, just to be sure
+node_modules
+# the game itself should not contain TS/JS code
+game
+
