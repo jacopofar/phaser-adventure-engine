@@ -36,6 +36,15 @@ describe("Tileset retrieval", () => {
       someProperty: 42,
       imageheight: 512,
       imagewidth: 512,
+      tileproperties: {
+        "5": {
+          collide: true,
+          ble: 42
+        },
+        "7": {
+          unrelated: false
+        }
+      }
     });
     // this double casting is necessary to create a fake loader without mocking the whole galaxy
     // but still having TS accept it

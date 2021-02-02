@@ -25,19 +25,25 @@ type ShownElement =
 export class Chunk {
   private sprites: ShownElement[] = [];
 
-  private async getTilesIndexes(
+  /**
+   * Load a list of Tiled tilesets, make them available as Phaser spritesheets and
+   * returns the mapping between the map tile index and the corresponding spritesheet index.
+   *
+   * Additionally, return the collision property of the tiles.
+  */
+  private async retrieveTileset(
     loader: Phaser.Loader.LoaderPlugin,
     mapPath: string,
     tilesets: TilesetData[]
-  ): Promise<Record<number, [string, number]>> {
+  ): Promise<Record<number, {sheet: string, frame: integer, collide?: boolean}>> {
     // TODO: often they'll be the same for many chunks, so
     // could be cached? Tricky because the tileset has to remain valid in Phaser
-    let transl: Record<integer, [string, integer]> = {};
+    let transl: Record<integer, {sheet: string, frame: integer, collide?: boolean}> = {};
     const base = mapPath.slice(0, mapPath.lastIndexOf("/") + 1);
     for (let tileset of tilesets) {
       let spritesheet = await getTileset(loader, base + tileset.source);
       for (let i = 0; i < spritesheet.size; i++) {
-        transl[tileset.firstgid + i] = [spritesheet.name, i];
+        transl[tileset.firstgid + i] = {sheet: spritesheet.name, frame: i, collide: spritesheet.properties[i]?.collide};
       }
     }
     return transl;
@@ -77,7 +83,7 @@ export class Chunk {
 
     // first step: load all the tilesets and calculate their map ids
     // note: this also loads the tilesets in the Phaser scene if not there already
-    const transl = await this.getTilesIndexes(
+    const transl = await this.retrieveTileset(
       targetScene.load,
       mapPath,
       mapData.tilesets
@@ -102,11 +108,10 @@ export class Chunk {
         const tx = x + (idx % width) * tilewidth;
         const ty = y + Math.floor(idx / height) * tileheight;
         let img: ShownElement;
-        // TODO this was a test logic, should be based on the tileset collision property
-        if (tid % 2 == 9000) {
-          img = targetScene.addObstacle(tx, ty, tile[0], tile[1]);
+        if (tile.collide) {
+          img = targetScene.addObstacle(tx, ty, tile.sheet, tile.frame);
         } else {
-          img = targetScene.add.image(tx, ty, tile[0], tile[1]);
+          img = targetScene.add.image(tx, ty, tile.sheet, tile.frame);
         }
         // multiplied by 10 to allow intermediate levels to be added more easily as if it was BASIC
         img.setDepth(layerDepth * 10);

@@ -46,7 +46,7 @@ describe("Single chunk retrieval", () => {
     });
     const mockedGetTileset = getTileset as jest.Mock;
     mockedGetTileset.mockImplementation(async (s, path: string) => {
-      return { name: path, size: 200 + path.length };
+      return { name: path, size: 200 + path.length, properties: {} };
     });
     const mockAddImage = jest.fn();
     const setDepth = jest.fn();
