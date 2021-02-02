@@ -1,5 +1,9 @@
 const axios = require("axios").default;
 
+type TilesetProperties = {
+  colliding: integer[];
+};
+
 let loadedTilesets: Record<string, { name: string; size: integer }> = {};
 
 export const getTileset = async (
