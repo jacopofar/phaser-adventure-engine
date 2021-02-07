@@ -1,13 +1,16 @@
 const axios = require("axios").default;
 
-type TilesProperties = Record<integer, {collide?: boolean}>
+type TilesProperties = Record<integer, { collide?: boolean }>;
 
-let loadedTilesets: Record<string, { name: string; size: integer, properties: TilesProperties }> = {};
+let loadedTilesets: Record<
+  string,
+  { name: string; size: integer; properties: TilesProperties }
+> = {};
 
 export const getTileset = async (
   loader: Phaser.Loader.LoaderPlugin,
   path: string
-): Promise<{ name: string; size: integer, properties: TilesProperties; }> => {
+): Promise<{ name: string; size: integer; properties: TilesProperties }> => {
   // TODO empty the cache when the scene is destroyed
   // https://photonstorm.github.io/phaser3-docs/Phaser.Scenes.Events.html#event:DESTROY
   if (typeof loadedTilesets[path] !== "undefined") {
@@ -24,18 +27,21 @@ export const getTileset = async (
   // if the tileset has tile properties, load them
   if (data.tileproperties) {
     Object.entries(data.tileproperties).forEach(([tid, props]) => {
-      if (props.hasOwnProperty('collide')) {
+      if (props.hasOwnProperty("collide")) {
         properties[Number(tid)] = {
           // meh. The condition in the if is not a guard
           // the type here is not exact, too, there could be other properties
-          collide: (props as {collide: boolean}).collide
+          collide: (props as { collide: boolean }).collide,
         };
       }
     });
   }
 
-
-  const p = new Promise<{ name: string; size: integer, properties: TilesProperties; }>((resolve, reject) => {
+  const p = new Promise<{
+    name: string;
+    size: integer;
+    properties: TilesProperties;
+  }>((resolve, reject) => {
     loader.on("complete", () => {
       loadedTilesets[path] = { name: path, size, properties };
       resolve(loadedTilesets[path]);

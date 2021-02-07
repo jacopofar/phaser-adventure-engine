@@ -30,20 +30,29 @@ export class Chunk {
    * returns the mapping between the map tile index and the corresponding spritesheet index.
    *
    * Additionally, return the collision property of the tiles.
-  */
+   */
   private async retrieveTileset(
     loader: Phaser.Loader.LoaderPlugin,
     mapPath: string,
     tilesets: TilesetData[]
-  ): Promise<Record<number, {sheet: string, frame: integer, collide?: boolean}>> {
+  ): Promise<
+    Record<number, { sheet: string; frame: integer; collide?: boolean }>
+  > {
     // TODO: often they'll be the same for many chunks, so
     // could be cached? Tricky because the tileset has to remain valid in Phaser
-    let transl: Record<integer, {sheet: string, frame: integer, collide?: boolean}> = {};
+    let transl: Record<
+      integer,
+      { sheet: string; frame: integer; collide?: boolean }
+    > = {};
     const base = mapPath.slice(0, mapPath.lastIndexOf("/") + 1);
     for (let tileset of tilesets) {
       let spritesheet = await getTileset(loader, base + tileset.source);
       for (let i = 0; i < spritesheet.size; i++) {
-        transl[tileset.firstgid + i] = {sheet: spritesheet.name, frame: i, collide: spritesheet.properties[i]?.collide};
+        transl[tileset.firstgid + i] = {
+          sheet: spritesheet.name,
+          frame: i,
+          collide: spritesheet.properties[i]?.collide,
+        };
       }
     }
     return transl;
