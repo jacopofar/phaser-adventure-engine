@@ -1,14 +1,10 @@
 import { WorldScene } from "./scenes/main-scene";
-
-type ExternalConfig = {
-  gameWidth: number;
-  gameHeight: number;
-};
+import { AdventureConfig } from "./index";
 
 export const PhaserConfig = (
-  config: ExternalConfig
+  config: AdventureConfig
 ): Phaser.Types.Core.GameConfig => ({
-  title: "Chunked tiles 2d game",
+  title: config.gameTitle,
   version: "0.1",
   width: config.gameWidth,
   height: config.gameHeight,

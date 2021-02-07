@@ -1,6 +1,7 @@
 import "phaser";
 
 import { ChunkManager } from "../tiling/chunk_manager";
+import { AdventureData } from "../index";
 
 export class WorldScene extends Phaser.Scene {
   public obstacles: Phaser.Physics.Arcade.StaticGroup;
@@ -14,10 +15,14 @@ export class WorldScene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.spritesheet("player", "game/sprites/MainGuySpriteSheet.png", {
-      frameWidth: 32,
-      frameHeight: 32,
-    });
+    this.load.spritesheet(
+      "player",
+      AdventureData.getGameData(this).playerSpriteSheet,
+      {
+        frameWidth: 32,
+        frameHeight: 32,
+      }
+    );
   }
 
   async create(): Promise<void> {
