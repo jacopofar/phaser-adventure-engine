@@ -106,13 +106,11 @@ export class WorldScene extends Phaser.Scene {
       const deltaY = this.game.input.activePointer.worldY - this.player.y;
       // there is no idle when the click is used, always a direction
       if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        this.direction = (deltaX > 0) ? "right": "left";
+        this.direction = deltaX > 0 ? "right" : "left";
+      } else {
+        this.direction = deltaY > 0 ? "down" : "up";
       }
-      else {
-        this.direction = (deltaY > 0) ? "down": "up";
-      }
-    }
-    else {
+    } else {
       // no mouse, maybe it is keyboard
       if (this.cursors.left.isDown || this.cursors.right.isDown) {
         this.direction = this.cursors.left.isDown ? "left" : "right";
