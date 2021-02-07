@@ -2,7 +2,7 @@ import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import "phaser";
 
-import { getTileset } from "../tiling/tilesets";
+import { getTileset } from "../../maps/tilesets";
 
 const axiosMock = new MockAdapter(axios);
 

@@ -1,6 +1,6 @@
 import "phaser";
 
-import { ChunkManager } from "../tiling/chunk_manager";
+import { ChunkManager } from "../maps/chunk_manager";
 import { AdventureData } from "../index";
 
 export class WorldScene extends Phaser.Scene {
@@ -27,7 +27,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   async create(): Promise<void> {
-    // first pause, or it will invoke update() before the chunkmanager even loaded the world
+    // pause first, or it would invoke update() before the chunkmanager even loaded the world
     this.scene.pause();
 
     const adventureData = AdventureData.getGameData(this);

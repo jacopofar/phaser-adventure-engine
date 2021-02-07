@@ -1,10 +1,10 @@
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
-import { Chunk } from "../tiling/chunk";
-import { getTileset } from "../tiling/tilesets";
-import { WorldScene } from "../scenes/main-scene";
+import { Chunk } from "../../maps/chunk";
+import { getTileset } from "../../maps/tilesets";
+import { WorldScene } from "../../scenes/main-scene";
 
-jest.mock("../tiling/tilesets");
+jest.mock("../../maps/tilesets");
 const axiosMock = new MockAdapter(axios);
 
 describe("Single chunk retrieval", () => {

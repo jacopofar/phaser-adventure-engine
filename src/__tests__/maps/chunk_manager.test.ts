@@ -1,11 +1,11 @@
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import "phaser";
-import { Chunk } from "../tiling/chunk";
-import { ChunkManager } from "../tiling/chunk_manager";
-import { WorldScene } from "../scenes/main-scene";
+import { Chunk } from "../../maps/chunk";
+import { ChunkManager } from "../../maps/chunk_manager";
+import { WorldScene } from "../../scenes/main-scene";
 
-jest.mock("../tiling/chunk");
+jest.mock("../../maps/chunk");
 const axiosMock = new MockAdapter(axios);
 
 describe("ChunkManager regex split", () => {
