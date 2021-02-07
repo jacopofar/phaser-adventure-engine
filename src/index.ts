@@ -12,6 +12,9 @@ export type AdventureConfig = {
   gameWidth: number;
   gameHeight: number;
   playerSpritesheet: string;
+  startX: integer;
+  startY: integer;
+  initialWorld: string;
 };
 
 /**
@@ -20,8 +23,15 @@ export type AdventureConfig = {
  */
 export class AdventureData {
   private _playerSpritesheet: string;
+  private _startX: integer;
+  private _startY: integer;
+  private _initialWorld: string;
+
   constructor(config: AdventureConfig) {
     this._playerSpritesheet = config.playerSpritesheet;
+    this._startX = config.startX;
+    this._startY = config.startY;
+    this._initialWorld = config.initialWorld;
   }
   /**
    * Return the path for the player spritesheet
@@ -29,6 +39,16 @@ export class AdventureData {
   get playerSpriteSheet(): string {
     return this._playerSpritesheet;
   }
+  get startX(): integer {
+    return this._startX;
+  }
+  get startY(): integer {
+    return this._startY;
+  }
+  get initialWorld(): string {
+    return this._initialWorld;
+  }
+
   static getGameData(scene: WorldScene) {
     return scene.game.registry.get("adventure_data") as AdventureData;
   }

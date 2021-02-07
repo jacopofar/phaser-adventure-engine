@@ -9,6 +9,7 @@ export class WorldScene extends Phaser.Scene {
   private player: Phaser.Physics.Arcade.Sprite;
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   private chunkManager: ChunkManager;
+  private direction: "up" | "down" | "right" | "left" | "idle" = "idle";
 
   constructor() {
     super({ key: "MainScene" });
@@ -19,8 +20,8 @@ export class WorldScene extends Phaser.Scene {
       "player",
       AdventureData.getGameData(this).playerSpriteSheet,
       {
-        frameWidth: 32,
-        frameHeight: 32,
+        frameWidth: 36,
+        frameHeight: 36,
       }
     );
   }
@@ -28,7 +29,14 @@ export class WorldScene extends Phaser.Scene {
   async create(): Promise<void> {
     // first pause, or it will invoke update() before the chunkmanager even loaded the world
     this.scene.pause();
-    this.player = this.physics.add.sprite(400, 300, "player");
+
+    const adventureData = AdventureData.getGameData(this);
+
+    this.player = this.physics.add.sprite(
+      adventureData.startX,
+      adventureData.startX,
+      "player"
+    );
     this.obstacles = this.physics.add.staticGroup();
     // TODO: this will later handle the logic for the game interaction
     this.physics.add.collider(this.player, this.obstacles, (a, b) => {
@@ -42,9 +50,37 @@ export class WorldScene extends Phaser.Scene {
     // note that it is also available as option in startFollow()
     this.cameras.main.setRoundPixels(true);
     this.chunkManager = new ChunkManager();
-    await this.chunkManager.loadWorld("game/maps/second/world.world");
+    await this.chunkManager.loadWorld(adventureData.initialWorld);
     //now the world data is loaded, the chunkmanager will load the needed chunks during the update()
     this.scene.resume();
+
+    this.anims.create({
+      key: "down",
+      frames: this.anims.generateFrameNumbers("player", { frames: [0, 1, 2] }),
+      frameRate: 5,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "right",
+      frames: this.anims.generateFrameNumbers("player", { frames: [3, 4, 5] }),
+      frameRate: 5,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "up",
+      frames: this.anims.generateFrameNumbers("player", { frames: [6, 7, 8] }),
+      frameRate: 5,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "left",
+      frames: this.anims.generateFrameNumbers("player", {
+        frames: [9, 10, 11],
+      }),
+      frameRate: 5,
+      repeat: -1,
+    });
   }
 
   /**
@@ -63,17 +99,36 @@ export class WorldScene extends Phaser.Scene {
   }
 
   async update(): Promise<void> {
+    const previousDirection = this.direction;
     if (this.cursors.left.isDown || this.cursors.right.isDown) {
-      this.player.setVelocityX(this.cursors.left.isDown ? -128 : 128);
+      this.direction = this.cursors.left.isDown ? "left" : "right";
     } else {
-      this.player.setVelocityX(0);
+      if (this.cursors.up.isDown || this.cursors.down.isDown) {
+        this.direction = this.cursors.up.isDown ? "up" : "down";
+      } else {
+        // nothing being pressed
+        this.direction = "idle";
+      }
     }
 
-    if (this.cursors.up.isDown || this.cursors.down.isDown) {
-      this.player.setVelocityY(this.cursors.up.isDown ? -128 : 128);
-    } else {
-      this.player.setVelocityY(0);
+    if (this.direction === "up" || this.direction === "down") {
+      this.player.setVelocityX(0);
+      this.player.setVelocityY(this.direction === "up" ? -128 : 128);
     }
+    if (this.direction === "right" || this.direction === "left") {
+      this.player.setVelocityY(0);
+      this.player.setVelocityX(this.direction === "left" ? -128 : 128);
+    }
+    if (this.direction === "idle") {
+      this.player.setVelocityY(0);
+      this.player.setVelocityX(0);
+      this.player.stop();
+    }
+
+    if (previousDirection != this.direction) {
+      this.player.play(this.direction);
+    }
+
     await this.chunkManager.handleNewPosition(
       this,
       this.player.x,
