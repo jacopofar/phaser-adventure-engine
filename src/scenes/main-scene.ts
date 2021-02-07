@@ -100,14 +100,29 @@ export class WorldScene extends Phaser.Scene {
 
   async update(): Promise<void> {
     const previousDirection = this.direction;
-    if (this.cursors.left.isDown || this.cursors.right.isDown) {
-      this.direction = this.cursors.left.isDown ? "left" : "right";
-    } else {
-      if (this.cursors.up.isDown || this.cursors.down.isDown) {
-        this.direction = this.cursors.up.isDown ? "up" : "down";
+    // if mouse/touch is used, ignore the keyboard
+    if (this.game.input.activePointer.isDown) {
+      const deltaX = this.game.input.activePointer.worldX - this.player.x;
+      const deltaY = this.game.input.activePointer.worldY - this.player.y;
+      // there is no idle when the click is used, always a direction
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        this.direction = (deltaX > 0) ? "right": "left";
+      }
+      else {
+        this.direction = (deltaY > 0) ? "down": "up";
+      }
+    }
+    else {
+      // no mouse, maybe it is keyboard
+      if (this.cursors.left.isDown || this.cursors.right.isDown) {
+        this.direction = this.cursors.left.isDown ? "left" : "right";
       } else {
-        // nothing being pressed
-        this.direction = "idle";
+        if (this.cursors.up.isDown || this.cursors.down.isDown) {
+          this.direction = this.cursors.up.isDown ? "up" : "down";
+        } else {
+          // nothing being pressed
+          this.direction = "idle";
+        }
       }
     }
 
@@ -125,7 +140,7 @@ export class WorldScene extends Phaser.Scene {
       this.player.stop();
     }
 
-    if (previousDirection != this.direction) {
+    if (previousDirection != this.direction && this.direction !== "idle") {
       this.player.play(this.direction);
     }
 
