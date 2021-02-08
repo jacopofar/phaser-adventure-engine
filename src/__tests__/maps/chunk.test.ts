@@ -5,15 +5,24 @@ import { getTileset } from "../../maps/tilesets";
 import { WorldScene } from "../../scenes/main-scene";
 
 jest.mock("../../maps/tilesets");
-const axiosMock = new MockAdapter(axios);
 
 describe("Single chunk retrieval", () => {
+  let axiosMock: MockAdapter;
+  beforeEach(() => {
+    axiosMock = new MockAdapter(axios);
+  });
   afterEach(() => {
     axiosMock.reset();
     axiosMock.resetHistory();
   });
+  afterAll(() => {
+    axiosMock.restore();
+  });
 
   test("loads a map", async () => {
+    axiosMock.onGet("/game/maps/map1/chunk_1_-4.json").reply(200, {
+      answer: 42,
+    });
     axiosMock.onGet("/game/maps/map1/chunk_1_-4.json").reply(200, {
       height: 15,
       width: 64,

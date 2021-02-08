@@ -9,12 +9,16 @@ import { WorldScene } from "./scenes/main-scene";
  */
 export type AdventureConfig = {
   gameTitle: string;
-  gameWidth: number;
-  gameHeight: number;
+  gameWidth: integer;
+  gameHeight: integer;
   playerSpritesheet: string;
   startX: integer;
   startY: integer;
   initialWorld: string;
+  playerSpriteHeight?: integer;
+  playerSpriteWidth?: integer;
+  tileHeightDefault?: integer;
+  tileWidthDefault?: integer;
 };
 
 /**
@@ -26,12 +30,20 @@ export class AdventureData {
   private _startX: integer;
   private _startY: integer;
   private _initialWorld: string;
+  private _playerSpriteWidth: integer;
+  private _playerSpriteHeight: integer;
+  private _tileWidthDefault: integer;
+  private _tileHeightDefault: integer;
 
   constructor(config: AdventureConfig) {
     this._playerSpritesheet = config.playerSpritesheet;
     this._startX = config.startX;
     this._startY = config.startY;
     this._initialWorld = config.initialWorld;
+    this._playerSpriteHeight = config.playerSpriteHeight || 32;
+    this._playerSpriteWidth = config.playerSpriteWidth || 32;
+    this._tileWidthDefault = config.tileWidthDefault || 32;
+    this._tileHeightDefault = config.tileHeightDefault || 32;
   }
   /**
    * Return the path for the player spritesheet
@@ -48,6 +60,18 @@ export class AdventureData {
   get initialWorld(): string {
     return this._initialWorld;
   }
+  get playerSpriteWidth(): integer {
+    return this._playerSpriteWidth;
+  }
+  get playerSpriteHeight(): integer {
+    return this._playerSpriteHeight;
+  }
+  get tileHeightDefault(): integer {
+    return this._tileHeightDefault;
+  }
+  get tileWidthDefault(): integer {
+    return this._tileWidthDefault;
+  }
 
   static getGameData(scene: WorldScene) {
     return scene.game.registry.get("adventure_data") as AdventureData;
@@ -63,7 +87,7 @@ window.addEventListener("load", async () => {
     const game = new Phaser.Game(PhaserConfig(config));
     AdventureData.setConfig(game, config);
   } catch (error) {
-    window.alert("Error loading game manifest :-(");
+    console.log("Error loading game manifest :-(");
     console.error(error);
   }
 });

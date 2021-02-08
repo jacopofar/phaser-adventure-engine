@@ -6,9 +6,19 @@ import { ChunkManager } from "../../maps/chunk_manager";
 import { WorldScene } from "../../scenes/main-scene";
 
 jest.mock("../../maps/chunk");
-const axiosMock = new MockAdapter(axios);
 
 describe("ChunkManager regex split", () => {
+  let axiosMock: MockAdapter;
+  beforeEach(() => {
+    axiosMock = new MockAdapter(axios);
+  });
+  afterEach(() => {
+    axiosMock.reset();
+    axiosMock.resetHistory();
+  });
+  afterAll(() => {
+    axiosMock.restore();
+  });
   test("can split a regex into parts", () => {
     expect(
       ChunkManager.partsFromRegex(
@@ -33,6 +43,17 @@ describe("ChunkManager regex split", () => {
 });
 
 describe("ChunkManager dynamic retrieval", () => {
+  let axiosMock: MockAdapter;
+  beforeEach(() => {
+    axiosMock = new MockAdapter(axios);
+  });
+  afterEach(() => {
+    axiosMock.reset();
+    axiosMock.resetHistory();
+  });
+  afterAll(() => {
+    axiosMock.restore();
+  });
   afterEach(() => {
     axiosMock.reset();
     axiosMock.resetHistory();

@@ -170,6 +170,10 @@ export class ChunkManager {
     }
   }
 
+  update(time: number, delta: number) {
+    Object.values(this.loadedChunks).forEach((c) => c.update(time, delta));
+  }
+
   static partsFromRegex(
     regex: string,
     worldPath: string

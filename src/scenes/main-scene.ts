@@ -5,6 +5,7 @@ import { AdventureData } from "../index";
 
 export class WorldScene extends Phaser.Scene {
   public obstacles: Phaser.Physics.Arcade.StaticGroup;
+  public movingPhyisicalSprites: Phaser.Physics.Arcade.Group;
 
   private player: Phaser.Physics.Arcade.Sprite;
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -16,14 +17,11 @@ export class WorldScene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.spritesheet(
-      "player",
-      AdventureData.getGameData(this).playerSpriteSheet,
-      {
-        frameWidth: 36,
-        frameHeight: 36,
-      }
-    );
+    const adventureData = AdventureData.getGameData(this);
+    this.load.spritesheet("player", adventureData.playerSpriteSheet, {
+      frameWidth: adventureData.playerSpriteWidth,
+      frameHeight: adventureData.playerSpriteHeight,
+    });
   }
 
   async create(): Promise<void> {
@@ -38,11 +36,18 @@ export class WorldScene extends Phaser.Scene {
       "player"
     );
     this.obstacles = this.physics.add.staticGroup();
+    this.movingPhyisicalSprites = this.physics.add.group();
     // TODO: this will later handle the logic for the game interaction
     this.physics.add.collider(this.player, this.obstacles, (a, b) => {
-      console.log("collision between", a, b);
+      console.log("collision with static object", a, b);
     });
-
+    this.physics.add.collider(
+      this.player,
+      this.movingPhyisicalSprites,
+      (a, b) => {
+        console.log("collision with moving sprite", a, b);
+      }
+    );
     this.player.setDepth(1);
     this.cursors = this.input.keyboard.createCursorKeys();
     this.cameras.main.startFollow(this.player);
@@ -98,7 +103,11 @@ export class WorldScene extends Phaser.Scene {
     return img;
   }
 
-  async update(): Promise<void> {
+  addCollidingAgent(sprite: Phaser.Physics.Arcade.Sprite) {
+    this.movingPhyisicalSprites.add(sprite);
+  }
+
+  async update(time: number, delta: number): Promise<void> {
     const previousDirection = this.direction;
     // if mouse/touch is used, ignore the keyboard
     if (this.game.input.activePointer.isDown) {
@@ -147,5 +156,6 @@ export class WorldScene extends Phaser.Scene {
       this.player.x,
       this.player.y
     );
+    this.chunkManager.update(time, delta);
   }
 }

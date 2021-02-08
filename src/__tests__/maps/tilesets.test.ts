@@ -4,9 +4,18 @@ import "phaser";
 
 import { getTileset } from "../../maps/tilesets";
 
-const axiosMock = new MockAdapter(axios);
-
 describe("Tileset retrieval", () => {
+  let axiosMock: MockAdapter;
+  beforeEach(() => {
+    axiosMock = new MockAdapter(axios);
+  });
+  afterEach(() => {
+    axiosMock.reset();
+    axiosMock.resetHistory();
+  });
+  afterAll(() => {
+    axiosMock.restore();
+  });
   afterEach(() => {
     axiosMock.reset();
     axiosMock.resetHistory();

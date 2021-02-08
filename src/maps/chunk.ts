@@ -1,8 +1,10 @@
 import "phaser";
 const axios = require("axios").default;
 
+import { AdventureData } from "../index";
 import { getTileset } from "./tilesets";
 import { WorldScene } from "../scenes/main-scene";
+import { AgentSprite } from "../agents/agent_sprite";
 
 /**
  * The map properties, using the same names as the Tiled JSON
@@ -11,6 +13,9 @@ type TilesetData = {
   firstgid: integer;
   source: string;
 };
+interface updatable {
+  update(time: number, delta: number): void;
+}
 
 type ShownElement =
   | Phaser.GameObjects.Image
@@ -24,6 +29,8 @@ type ShownElement =
  */
 export class Chunk {
   private sprites: ShownElement[] = [];
+  private agents: AgentSprite[] = [];
+  private toUpdate: updatable[] = [];
 
   /**
    * Load a list of Tiled tilesets, make them available as Phaser spritesheets and
@@ -33,7 +40,7 @@ export class Chunk {
    */
   private async retrieveTileset(
     loader: Phaser.Loader.LoaderPlugin,
-    mapPath: string,
+    basePath: string,
     tilesets: TilesetData[]
   ): Promise<
     Record<number, { sheet: string; frame: integer; collide?: boolean }>
@@ -44,9 +51,8 @@ export class Chunk {
       integer,
       { sheet: string; frame: integer; collide?: boolean }
     > = {};
-    const base = mapPath.slice(0, mapPath.lastIndexOf("/") + 1);
     for (let tileset of tilesets) {
-      let spritesheet = await getTileset(loader, base + tileset.source);
+      let spritesheet = await getTileset(loader, basePath + tileset.source);
       for (let i = 0; i < spritesheet.size; i++) {
         transl[tileset.firstgid + i] = {
           sheet: spritesheet.name,
@@ -89,12 +95,13 @@ export class Chunk {
     // (e.g. is it orthogonal? compressed? wrong renderorder?) and raise clear errors if needed
     // this could be useful: https://github.com/gcanti/io-ts
     const { height, width, tilewidth, tileheight } = mapData;
+    const basePath = mapPath.slice(0, mapPath.lastIndexOf("/") + 1);
 
     // first step: load all the tilesets and calculate their map ids
     // note: this also loads the tilesets in the Phaser scene if not there already
     const transl = await this.retrieveTileset(
       targetScene.load,
-      mapPath,
+      basePath,
       mapData.tilesets
     );
 
@@ -103,6 +110,33 @@ export class Chunk {
     for (let layer of mapData.layers) {
       layerDepth += 1;
       // console.log('Drawing layer at depth', layerDepth * 10);
+      if (layer.type === "objectgroup") {
+        const adventureData = AdventureData.getGameData(targetScene);
+        // TODO define a schema and checks for the object
+        layer.objects.forEach(async (obj: any) => {
+          if (typeof obj.properties?.spritesheet !== "undefined") {
+            const as = new AgentSprite();
+            this.agents.push(as);
+
+            const { shouldUpdate } = await as.load(
+              targetScene,
+              obj.x + x,
+              obj.y + y,
+              basePath + obj.properties.spritesheet,
+              obj.properties.frameHeight || adventureData.tileHeightDefault,
+              obj.properties.frameWidth || adventureData.tileWidthDefault,
+              layerDepth * 10,
+              false,
+              null,
+              obj.properties.path,
+              obj.properties.collide || "no"
+            );
+            if (shouldUpdate) {
+              this.toUpdate.push(as);
+            }
+          }
+        });
+      }
       if (layer.type !== "tilelayer") {
         continue;
       }
@@ -133,5 +167,12 @@ export class Chunk {
   unload() {
     this.sprites.forEach((s) => s.destroy());
     this.sprites = [];
+    this.agents.forEach((a) => a.destroy());
+    this.agents = [];
+
+    this.toUpdate = [];
+  }
+  update(time: number, delta: number) {
+    this.toUpdate.forEach((t) => t.update(time, delta));
   }
 }
