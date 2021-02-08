@@ -1,7 +1,10 @@
 import { WorldScene } from "../scenes/main-scene";
 import { getSpritesheet } from "./spritesheets";
 
-export class AgentSprite {
+/**
+ * An agent without interaction, it moves following a path or stands still.
+ */
+export class DecorativeAgent {
   private sprite: Phaser.Physics.Arcade.Sprite;
   private staticImage: Phaser.GameObjects.Image;
 

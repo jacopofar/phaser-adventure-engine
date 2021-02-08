@@ -4,7 +4,7 @@ const axios = require("axios").default;
 import { AdventureData } from "../index";
 import { getTileset } from "./tilesets";
 import { WorldScene } from "../scenes/main-scene";
-import { AgentSprite } from "../agents/agent_sprite";
+import { DecorativeAgent } from "../agents/decorative_agent";
 
 /**
  * The map properties, using the same names as the Tiled JSON
@@ -29,7 +29,7 @@ type ShownElement =
  */
 export class Chunk {
   private sprites: ShownElement[] = [];
-  private agents: AgentSprite[] = [];
+  private agents: DecorativeAgent[] = [];
   private toUpdate: updatable[] = [];
 
   /**
@@ -115,7 +115,7 @@ export class Chunk {
         // TODO define a schema and checks for the object
         layer.objects.forEach(async (obj: any) => {
           if (typeof obj.properties?.spritesheet !== "undefined") {
-            const as = new AgentSprite();
+            const as = new DecorativeAgent();
             this.agents.push(as);
 
             const { shouldUpdate } = await as.load(
