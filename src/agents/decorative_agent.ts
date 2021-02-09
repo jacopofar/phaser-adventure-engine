@@ -1,7 +1,7 @@
 import { WorldScene } from "../scenes/main-scene";
 import { getSpritesheet } from "./spritesheets";
 
-type PathOp = "up" | "down"|"right"|"left"|"idle";
+type PathOp = "up" | "down" | "right" | "left" | "idle";
 
 /**
  * An agent without interaction, it moves following a path or stands still.
@@ -103,15 +103,21 @@ export class DecorativeAgent {
     this.timeInCycle += delta;
     this.timeInCycle =
       this.timeInCycle % (this.path.length * this.stepDuration);
-    const op = this.path[Math.floor(this.timeInCycle / this.stepDuration)] as PathOp;
+    const op = this.path[
+      Math.floor(this.timeInCycle / this.stepDuration)
+    ] as PathOp;
 
     if (op === "up" || op === "down") {
       this.sprite.setVelocityX(0);
-      this.sprite.setVelocityY(op === "up" ? -this.movementSpeed : this.movementSpeed);
+      this.sprite.setVelocityY(
+        op === "up" ? -this.movementSpeed : this.movementSpeed
+      );
     }
     if (op === "right" || op === "left") {
       this.sprite.setVelocityY(0);
-      this.sprite.setVelocityX(op === "left" ? -this.movementSpeed : this.movementSpeed);
+      this.sprite.setVelocityX(
+        op === "left" ? -this.movementSpeed : this.movementSpeed
+      );
     }
     if (op === "idle") {
       this.sprite.setVelocityY(0);

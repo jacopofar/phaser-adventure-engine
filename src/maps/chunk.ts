@@ -131,7 +131,7 @@ export class Chunk {
               obj.properties.path,
               obj.properties.collide || "no",
               obj.properties.stepDuration || 1000,
-              obj.properties.movementSpeed || 100,
+              obj.properties.movementSpeed || 100
             );
             if (shouldUpdate) {
               this.toUpdate.push(as);
