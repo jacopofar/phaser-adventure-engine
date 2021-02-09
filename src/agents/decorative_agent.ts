@@ -1,6 +1,8 @@
 import { WorldScene } from "../scenes/main-scene";
 import { getSpritesheet } from "./spritesheets";
 
+type PathOp = "up" | "down"|"right"|"left"|"idle";
+
 /**
  * An agent without interaction, it moves following a path or stands still.
  */
@@ -12,7 +14,8 @@ export class DecorativeAgent {
   private path: string[];
   private timeInCycle: integer = 0;
   private stepDuration: integer = 1000;
-  private currentState: string = null;
+  private currentState: PathOp = null;
+  private movementSpeed: integer;
 
   async load(
     targetScene: WorldScene,
@@ -25,11 +28,15 @@ export class DecorativeAgent {
     animated: boolean = false,
     frame: integer = null,
     path: string = null,
-    collide: "no" | "immovable" | "try" = "no"
+    collide: "no" | "immovable" | "try" = "no",
+    stepDuration: integer,
+    movementSpeed: integer
   ) {
     if (animated && frame !== null) {
       throw Error("Cannot have animated = true AND a frame at the same time");
     }
+    this.stepDuration = stepDuration;
+    this.movementSpeed = movementSpeed;
     this.path = (path?.split(",") || []).map((p) => p.trim().toLowerCase());
     const sheetName = await getSpritesheet(
       targetScene.load,
@@ -96,15 +103,15 @@ export class DecorativeAgent {
     this.timeInCycle += delta;
     this.timeInCycle =
       this.timeInCycle % (this.path.length * this.stepDuration);
-    const op = this.path[Math.floor(this.timeInCycle / this.stepDuration)];
+    const op = this.path[Math.floor(this.timeInCycle / this.stepDuration)] as PathOp;
 
     if (op === "up" || op === "down") {
       this.sprite.setVelocityX(0);
-      this.sprite.setVelocityY(op === "up" ? -128 : 128);
+      this.sprite.setVelocityY(op === "up" ? -this.movementSpeed : this.movementSpeed);
     }
     if (op === "right" || op === "left") {
       this.sprite.setVelocityY(0);
-      this.sprite.setVelocityX(op === "left" ? -128 : 128);
+      this.sprite.setVelocityX(op === "left" ? -this.movementSpeed : this.movementSpeed);
     }
     if (op === "idle") {
       this.sprite.setVelocityY(0);
@@ -115,5 +122,6 @@ export class DecorativeAgent {
     if (this.currentState != op && op !== "idle") {
       this.sprite.play(this.spritesheet + "_" + op);
     }
+    this.currentState = op;
   }
 }
