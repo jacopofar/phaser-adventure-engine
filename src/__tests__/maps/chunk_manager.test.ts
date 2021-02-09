@@ -1,6 +1,6 @@
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
-import { mocked } from 'ts-jest/utils';
+import { mocked } from "ts-jest/utils";
 import "phaser";
 
 import { Chunk } from "../../maps/chunk";
@@ -14,9 +14,9 @@ jest.mock("../../maps/chunk", () => {
     Chunk: jest.fn().mockImplementation(() => {
       return {
         unload: unloadMock,
-        loadMap: jest.fn()
+        loadMap: jest.fn(),
       };
-    })
+    }),
   };
 });
 
@@ -89,13 +89,12 @@ describe("ChunkManager dynamic retrieval", () => {
   });
 
   test("loads the initial chunks", async () => {
-
     const addTextMock = jest.fn();
-    const scene = {
+    const scene = ({
       add: {
-        text: addTextMock
-      }
-    } as unknown as WorldScene;
+        text: addTextMock,
+      },
+    } as unknown) as WorldScene;
     axiosMock.onGet("/game/maps/map1/someworld.world").reply(200, {
       patterns: [
         {
