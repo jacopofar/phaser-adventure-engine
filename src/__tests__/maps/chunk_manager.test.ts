@@ -1,11 +1,24 @@
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
+import { mocked } from 'ts-jest/utils';
 import "phaser";
+
 import { Chunk } from "../../maps/chunk";
 import { ChunkManager } from "../../maps/chunk_manager";
 import { WorldScene } from "../../scenes/main-scene";
 
-jest.mock("../../maps/chunk");
+const unloadMock = jest.fn();
+
+jest.mock("../../maps/chunk", () => {
+  return {
+    Chunk: jest.fn().mockImplementation(() => {
+      return {
+        unload: unloadMock,
+        loadMap: jest.fn()
+      };
+    })
+  };
+});
 
 describe("ChunkManager regex split", () => {
   let axiosMock: MockAdapter;
@@ -43,8 +56,10 @@ describe("ChunkManager regex split", () => {
 });
 
 describe("ChunkManager dynamic retrieval", () => {
+  const MockedChunk = mocked(Chunk, true);
   let axiosMock: MockAdapter;
   beforeEach(() => {
+    MockedChunk.mockClear();
     axiosMock = new MockAdapter(axios);
   });
   afterEach(() => {
@@ -74,7 +89,13 @@ describe("ChunkManager dynamic retrieval", () => {
   });
 
   test("loads the initial chunks", async () => {
-    const scene = {};
+
+    const addTextMock = jest.fn();
+    const scene = {
+      add: {
+        text: addTextMock
+      }
+    } as unknown as WorldScene;
     axiosMock.onGet("/game/maps/map1/someworld.world").reply(200, {
       patterns: [
         {
@@ -89,15 +110,20 @@ describe("ChunkManager dynamic retrieval", () => {
     });
     const cm = new ChunkManager(2000, 3000, 10);
     await cm.loadWorld("/game/maps/map1/someworld.world");
-    await cm.handleNewPosition(scene as WorldScene, 0, 42);
+    await cm.handleNewPosition(scene, 0, 42);
+    // nothing was unloaded
+    expect(unloadMock).toHaveBeenCalledTimes(0);
     expect(axiosMock.history.get.length).toBe(1);
-    // it loaded the first 9 chunks around the player
-    expect(Chunk).toHaveBeenCalledTimes(9);
+    // it loaded the first 16 chunks around the player
+    expect(Chunk).toHaveBeenCalledTimes(16);
     // a small movement, should not load anything
-    await cm.handleNewPosition(scene as WorldScene, 4, 42);
-    expect(Chunk).toHaveBeenCalledTimes(9);
-    // bigger movement, load some more
-    await cm.handleNewPosition(scene as WorldScene, 1000, 42);
-    expect(Chunk).toHaveBeenCalledTimes(9);
+    await cm.handleNewPosition(scene, 4, 42);
+    expect(Chunk).toHaveBeenCalledTimes(16);
+    // bigger movement, load some more (a whole side, so increases by the square root)
+    await cm.handleNewPosition(scene, 1000, 42);
+    expect(Chunk).toHaveBeenCalledTimes(20);
+    // another movement, some chunks get unloaded (again the square root)
+    await cm.handleNewPosition(scene as WorldScene, 3020, 42);
+    expect(unloadMock).toHaveBeenCalledTimes(4);
   });
 });

@@ -153,8 +153,8 @@ export class WorldScene extends Phaser.Scene {
 
     await this.chunkManager.handleNewPosition(
       this,
-      this.player.x,
-      this.player.y
+      Math.floor(this.player.x),
+      Math.floor(this.player.y)
     );
     this.chunkManager.update(time, delta);
   }

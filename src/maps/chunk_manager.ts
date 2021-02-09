@@ -38,7 +38,7 @@ export class ChunkManager {
 
   constructor(
     loadThreshold: integer = 2000,
-    unloadThreshold: integer = 4000,
+    unloadThreshold: integer = 3000,
     reactionDistance: integer = 32
   ) {
     if (unloadThreshold <= loadThreshold) {
@@ -114,9 +114,13 @@ export class ChunkManager {
     const maxunloadX = x + this.unloadDist;
     const minunloadY = y - this.unloadDist;
     const maxunloadY = y + this.unloadDist;
+    // how many chunks have to be checked to include the thresholds
+    const maxOffset = Math.ceil(
+      this.unloadDist / Math.min(this.world.multiplierX, this.world.multiplierY)
+    );
 
-    for (let offx = -1; offx <= 1; offx++) {
-      for (let offy = -1; offy <= 1; offy++) {
+    for (let offx = -maxOffset; offx <= maxOffset; offx++) {
+      for (let offy = -maxOffset; offy <= maxOffset; offy++) {
         const thisChunk = `${curChunkX + offx}_${curChunkY + offy}`;
 
         const minChunkX =
@@ -132,18 +136,16 @@ export class ChunkManager {
         if (this.loadedChunks.hasOwnProperty(thisChunk)) {
           // loaded, check for unload condition: is it completely outside the unload area?
           if (
-            !(
-              maxunloadX >= minChunkX &&
-              minunloadX <= maxChunkX &&
-              minunloadY <= maxChunkY &&
-              maxunloadY >= minChunkY
-            )
+            maxunloadX < minChunkX ||
+            minunloadX > maxChunkX ||
+            maxunloadY < minChunkY ||
+            minunloadY > minChunkY
           ) {
             this.loadedChunks[thisChunk].unload();
             delete this.loadedChunks[thisChunk];
           }
         } else {
-          // not loaded, should it be? That is, intersects the load area
+          // not loaded, should it be? That is, does it intersect the load area?
           if (
             maxloadX >= minChunkX &&
             minloadX <= maxChunkX &&
