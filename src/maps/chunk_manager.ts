@@ -38,7 +38,7 @@ export class ChunkManager {
 
   constructor(
     loadThreshold: integer = 2000,
-    unloadThreshold: integer = 3000,
+    unloadThreshold: integer = 2500,
     reactionDistance: integer = 32
   ) {
     if (unloadThreshold <= loadThreshold) {

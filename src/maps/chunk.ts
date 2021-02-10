@@ -5,6 +5,7 @@ import { AdventureData } from "../index";
 import { getTileset } from "./tilesets";
 import { WorldScene } from "../scenes/main-scene";
 import { DecorativeAgent } from "../agents/decorative_agent";
+import { FullAgent } from "../agents/full_agent";
 
 /**
  * The map properties, using the same names as the Tiled JSON
@@ -31,6 +32,7 @@ export class Chunk {
   private sprites: ShownElement[] = [];
   private agents: DecorativeAgent[] = [];
   private toUpdate: updatable[] = [];
+  private mapPath: string;
 
   /**
    * Load a list of Tiled tilesets, make them available as Phaser spritesheets and
@@ -74,6 +76,7 @@ export class Chunk {
     let mapData;
     try {
       mapData = (await axios.get(mapPath)).data;
+      this.mapPath = mapPath;
     } catch {
       for (let k = 0; k < 10; k++) {
         this.sprites.push(
@@ -114,6 +117,7 @@ export class Chunk {
         const adventureData = AdventureData.getGameData(targetScene);
         // TODO define a schema and checks for the object
         layer.objects.forEach(async (obj: any) => {
+          // if it has a spritesheet, it's the simplest type of agent, a decorative one
           if (typeof obj.properties?.spritesheet !== "undefined") {
             const as = new DecorativeAgent();
             this.agents.push(as);
@@ -135,6 +139,17 @@ export class Chunk {
             );
             if (shouldUpdate) {
               this.toUpdate.push(as);
+            }
+          }
+          // there's a JSON property, create the "full" agent
+          if (typeof obj.properties?.agent !== "undefined") {
+            // the object can have an agent_id string, otherwise the map and id are concatenated
+            const agentId: string = obj.properties.agent_id || (this.mapPath + "_" + obj.id);
+            const agentConfig = (await axios.get(basePath + obj.properties.agent)).data;
+            const fa = new FullAgent(agentId, agentConfig);
+            const { shouldUpdate } = await fa.load();
+            if (shouldUpdate) {
+              this.toUpdate.push(fa);
             }
           }
         });
