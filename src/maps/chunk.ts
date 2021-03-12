@@ -144,8 +144,11 @@ export class Chunk {
           // there's a JSON property, create the "full" agent
           if (typeof obj.properties?.agent !== "undefined") {
             // the object can have an agent_id string, otherwise the map and id are concatenated
-            const agentId: string = obj.properties.agent_id || (this.mapPath + "_" + obj.id);
-            const agentConfig = (await axios.get(basePath + obj.properties.agent)).data;
+            const agentId: string =
+              obj.properties.agent_id || this.mapPath + "_" + obj.id;
+            const agentConfig = (
+              await axios.get(basePath + obj.properties.agent)
+            ).data;
             const fa = new FullAgent(agentId, agentConfig);
             const { shouldUpdate } = await fa.load();
             if (shouldUpdate) {

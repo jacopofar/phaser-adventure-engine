@@ -3,11 +3,13 @@ import "phaser";
 import { ChunkManager } from "../maps/chunk_manager";
 import { AdventureData } from "../index";
 
+import { Pawn } from "../agents/pawn";
+
 export class WorldScene extends Phaser.Scene {
   public obstacles: Phaser.Physics.Arcade.StaticGroup;
   public movingPhyisicalSprites: Phaser.Physics.Arcade.Group;
 
-  private player: Phaser.Physics.Arcade.Sprite;
+  private playerPawn: Pawn;
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   private chunkManager: ChunkManager;
   private direction: "up" | "down" | "right" | "left" | "idle" = "idle";
@@ -30,27 +32,40 @@ export class WorldScene extends Phaser.Scene {
 
     const adventureData = AdventureData.getGameData(this);
 
-    this.player = this.physics.add.sprite(
-      adventureData.startX,
-      adventureData.startX,
-      "player"
-    );
     this.obstacles = this.physics.add.staticGroup();
     this.movingPhyisicalSprites = this.physics.add.group();
+    this.playerPawn = new Pawn();
+    await this.playerPawn.load(
+      this,
+      adventureData.startX,
+      adventureData.startX,
+      adventureData.playerSpriteSheet,
+      adventureData.playerSpriteHeight,
+      adventureData.playerSpriteWidth,
+      1,
+      true,
+      null,
+      "try",
+      128
+    );
     // TODO: this will later handle the logic for the game interaction
-    this.physics.add.collider(this.player, this.obstacles, (a, b) => {
-      console.log("collision with static object", a, b);
-    });
     this.physics.add.collider(
-      this.player,
+      this.playerPawn.physicsSprite,
+      this.obstacles,
+      (a, b) => {
+        console.log("collision with static object", a, b);
+      }
+    );
+    this.physics.add.collider(
+      this.playerPawn.physicsSprite,
       this.movingPhyisicalSprites,
       (a, b) => {
         console.log("collision with moving sprite", a, b);
       }
     );
-    this.player.setDepth(1);
     this.cursors = this.input.keyboard.createCursorKeys();
-    this.cameras.main.startFollow(this.player);
+    this.cameras.main.startFollow(this.playerPawn.physicsSprite);
+
     // this is to avoid the pixel aliasing (appears as a border on every tile when moving)
     // note that it is also available as option in startFollow()
     this.cameras.main.setRoundPixels(true);
@@ -58,34 +73,6 @@ export class WorldScene extends Phaser.Scene {
     await this.chunkManager.loadWorld(adventureData.initialWorld);
     //now the world data is loaded, the chunkmanager will load the needed chunks during the update()
     this.scene.resume();
-
-    this.anims.create({
-      key: "down",
-      frames: this.anims.generateFrameNumbers("player", { frames: [0, 1, 2] }),
-      frameRate: 5,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "right",
-      frames: this.anims.generateFrameNumbers("player", { frames: [3, 4, 5] }),
-      frameRate: 5,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "up",
-      frames: this.anims.generateFrameNumbers("player", { frames: [6, 7, 8] }),
-      frameRate: 5,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "left",
-      frames: this.anims.generateFrameNumbers("player", {
-        frames: [9, 10, 11],
-      }),
-      frameRate: 5,
-      repeat: -1,
-    });
   }
 
   /**
@@ -111,8 +98,8 @@ export class WorldScene extends Phaser.Scene {
     const previousDirection = this.direction;
     // if mouse/touch is used, ignore the keyboard
     if (this.game.input.activePointer.isDown) {
-      const deltaX = this.game.input.activePointer.worldX - this.player.x;
-      const deltaY = this.game.input.activePointer.worldY - this.player.y;
+      const deltaX = this.game.input.activePointer.worldX - this.playerPawn.x;
+      const deltaY = this.game.input.activePointer.worldY - this.playerPawn.y;
       // there is no idle when the click is used, always a direction
       if (Math.abs(deltaX) > Math.abs(deltaY)) {
         this.direction = deltaX > 0 ? "right" : "left";
@@ -132,29 +119,12 @@ export class WorldScene extends Phaser.Scene {
         }
       }
     }
-
-    if (this.direction === "up" || this.direction === "down") {
-      this.player.setVelocityX(0);
-      this.player.setVelocityY(this.direction === "up" ? -128 : 128);
-    }
-    if (this.direction === "right" || this.direction === "left") {
-      this.player.setVelocityY(0);
-      this.player.setVelocityX(this.direction === "left" ? -128 : 128);
-    }
-    if (this.direction === "idle") {
-      this.player.setVelocityY(0);
-      this.player.setVelocityX(0);
-      this.player.stop();
-    }
-
-    if (previousDirection != this.direction && this.direction !== "idle") {
-      this.player.play(this.direction);
-    }
+    this.playerPawn.move(this.direction);
 
     await this.chunkManager.handleNewPosition(
       this,
-      Math.floor(this.player.x),
-      Math.floor(this.player.y)
+      Math.floor(this.playerPawn.x),
+      Math.floor(this.playerPawn.y)
     );
     this.chunkManager.update(time, delta);
   }
