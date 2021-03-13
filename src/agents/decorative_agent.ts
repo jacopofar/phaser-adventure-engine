@@ -35,8 +35,7 @@ export class DecorativeAgent {
     }
     this.stepDuration = stepDuration;
     this.path = (path?.split(",") || []).map((p) => p.trim().toLowerCase());
-    this.pawn = new Pawn();
-    await this.pawn.load(
+    this.pawn = await Pawn.load(
       targetScene,
       x,
       y,
@@ -44,7 +43,6 @@ export class DecorativeAgent {
       frameHeight,
       frameWidth,
       depth,
-      animated,
       frame,
       collide,
       movementSpeed

@@ -34,8 +34,7 @@ export class WorldScene extends Phaser.Scene {
 
     this.obstacles = this.physics.add.staticGroup();
     this.movingPhyisicalSprites = this.physics.add.group();
-    this.playerPawn = new Pawn();
-    await this.playerPawn.load(
+    this.playerPawn = await Pawn.load(
       this,
       adventureData.startX,
       adventureData.startX,
@@ -43,28 +42,23 @@ export class WorldScene extends Phaser.Scene {
       adventureData.playerSpriteHeight,
       adventureData.playerSpriteWidth,
       1,
-      true,
-      null,
+      0,
       "try",
       128
     );
     // TODO: this will later handle the logic for the game interaction
+    this.physics.add.collider(this.playerPawn, this.obstacles, (a, b) => {
+      console.log("collision with static object", a, b);
+    });
     this.physics.add.collider(
-      this.playerPawn.physicsSprite,
-      this.obstacles,
-      (a, b) => {
-        console.log("collision with static object", a, b);
-      }
-    );
-    this.physics.add.collider(
-      this.playerPawn.physicsSprite,
+      this.playerPawn,
       this.movingPhyisicalSprites,
       (a, b) => {
         console.log("collision with moving sprite", a, b);
       }
     );
     this.cursors = this.input.keyboard.createCursorKeys();
-    this.cameras.main.startFollow(this.playerPawn.physicsSprite);
+    this.cameras.main.startFollow(this.playerPawn);
 
     // this is to avoid the pixel aliasing (appears as a border on every tile when moving)
     // note that it is also available as option in startFollow()
