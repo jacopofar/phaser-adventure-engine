@@ -12,8 +12,11 @@ export class Pawn extends Phaser.Physics.Arcade.Sprite {
   private movementSpeed: integer;
 
   construnctor() {
-    // the constructor cannot
-    throw Error("This class cannot be instantiated, use Pawn.createPawn instead");
+    // the constructor cannot be async, and creating a pawn without the data
+    // from the async http request would only create confusion
+    throw Error(
+      "This class cannot be instantiated, use Pawn.createPawn instead"
+    );
   }
 
   static async createPawn(
@@ -34,7 +37,7 @@ export class Pawn extends Phaser.Physics.Arcade.Sprite {
       frameHeight
     );
     const ret: Pawn = new Pawn(targetScene, x, y, sheetName.name);
-    targetScene.add.existing(ret)
+    targetScene.add.existing(ret);
 
     ret.spritesheet = spritesheet;
 

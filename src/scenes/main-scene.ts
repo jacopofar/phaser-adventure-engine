@@ -52,13 +52,9 @@ export class WorldScene extends Phaser.Scene {
     // this is a collision between an agent (or the player) and a static obstacle
     // so far, there's no use for it
     this.physics.add.collider(this.movingPawns, this.obstacles);
-    this.physics.add.collider(
-      this.playerPawn,
-      this.movingPawns,
-      (a, b) => {
-        // console.log("collision with moving sprite", a, b);
-      }
-    );
+    this.physics.add.collider(this.playerPawn, this.movingPawns, (a, b) => {
+      // console.log("collision with moving sprite", a, b);
+    });
     this.cursors = this.input.keyboard.createCursorKeys();
     this.cameras.main.startFollow(this.playerPawn);
 
