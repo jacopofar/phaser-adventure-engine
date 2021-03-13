@@ -7,7 +7,7 @@ import { Pawn } from "../agents/pawn";
 
 export class WorldScene extends Phaser.Scene {
   public obstacles: Phaser.Physics.Arcade.StaticGroup;
-  public movingPhyisicalSprites: Phaser.Physics.Arcade.Group;
+  public movingPawns: Phaser.Physics.Arcade.Group;
 
   private playerPawn: Pawn;
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -33,8 +33,8 @@ export class WorldScene extends Phaser.Scene {
     const adventureData = AdventureData.getGameData(this);
 
     this.obstacles = this.physics.add.staticGroup();
-    this.movingPhyisicalSprites = this.physics.add.group();
-    this.playerPawn = await Pawn.load(
+    this.movingPawns = this.physics.add.group();
+    this.playerPawn = await Pawn.createPawn(
       this,
       adventureData.startX,
       adventureData.startX,
@@ -42,19 +42,21 @@ export class WorldScene extends Phaser.Scene {
       adventureData.playerSpriteHeight,
       adventureData.playerSpriteWidth,
       1,
-      0,
-      "try",
+      "immovable",
       128
     );
     // TODO: this will later handle the logic for the game interaction
     this.physics.add.collider(this.playerPawn, this.obstacles, (a, b) => {
-      console.log("collision with static object", a, b);
+      // console.log("collision with static object", a, b);
     });
+    // this is a collision between an agent (or the player) and a static obstacle
+    // so far, there's no use for it
+    this.physics.add.collider(this.movingPawns, this.obstacles);
     this.physics.add.collider(
       this.playerPawn,
-      this.movingPhyisicalSprites,
+      this.movingPawns,
       (a, b) => {
-        console.log("collision with moving sprite", a, b);
+        // console.log("collision with moving sprite", a, b);
       }
     );
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -84,8 +86,8 @@ export class WorldScene extends Phaser.Scene {
     return img;
   }
 
-  addCollidingAgent(sprite: Phaser.Physics.Arcade.Sprite) {
-    this.movingPhyisicalSprites.add(sprite);
+  addCollidingPawn(pawn: Pawn) {
+    this.movingPawns.add(pawn);
   }
 
   async update(time: number, delta: number): Promise<void> {

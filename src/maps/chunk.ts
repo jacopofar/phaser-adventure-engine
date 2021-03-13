@@ -130,8 +130,6 @@ export class Chunk {
               obj.properties.frameHeight || adventureData.tileHeightDefault,
               obj.properties.frameWidth || adventureData.tileWidthDefault,
               layerDepth * 10,
-              false,
-              null,
               obj.properties.path,
               obj.properties.collide || "no",
               obj.properties.stepDuration || 1000,

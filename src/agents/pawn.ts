@@ -11,7 +11,12 @@ export class Pawn extends Phaser.Physics.Arcade.Sprite {
   private currentState: PathOp = null;
   private movementSpeed: integer;
 
-  static async load(
+  construnctor() {
+    // the constructor cannot
+    throw Error("This class cannot be instantiated, use Pawn.createPawn instead");
+  }
+
+  static async createPawn(
     targetScene: WorldScene,
     x: integer,
     y: integer,
@@ -19,7 +24,6 @@ export class Pawn extends Phaser.Physics.Arcade.Sprite {
     frameHeight: integer,
     frameWidth: integer,
     depth: integer,
-    frame: integer = null,
     collide: "no" | "immovable" | "try" = "no",
     movementSpeed: integer
   ) {
@@ -36,7 +40,7 @@ export class Pawn extends Phaser.Physics.Arcade.Sprite {
 
     ret.movementSpeed = movementSpeed;
     if (collide !== "no") {
-      targetScene.addCollidingAgent(ret);
+      targetScene.addCollidingPawn(ret);
     }
     if (collide === "immovable") {
       ret.setImmovable(false);

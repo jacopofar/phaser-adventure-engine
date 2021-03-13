@@ -23,19 +23,14 @@ export class DecorativeAgent {
     frameHeight: integer,
     frameWidth: integer,
     depth: integer,
-    animated: boolean = false,
-    frame: integer = null,
     path: string = null,
     collide: "no" | "immovable" | "try" = "no",
     stepDuration: integer,
     movementSpeed: integer
   ) {
-    if (animated && frame !== null) {
-      throw Error("Cannot have animated = true AND a frame at the same time");
-    }
     this.stepDuration = stepDuration;
     this.path = (path?.split(",") || []).map((p) => p.trim().toLowerCase());
-    this.pawn = await Pawn.load(
+    this.pawn = await Pawn.createPawn(
       targetScene,
       x,
       y,
@@ -43,7 +38,6 @@ export class DecorativeAgent {
       frameHeight,
       frameWidth,
       depth,
-      frame,
       collide,
       movementSpeed
     );
