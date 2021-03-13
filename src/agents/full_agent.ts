@@ -1,5 +1,8 @@
 export class FullAgent {
-  constructor(agentId: string, agentConfig: any) {}
+  private agentId: string;
+  constructor(agentId: string, agentConfig: any) {
+    this.agentId = agentId;
+  }
 
   async load() {
     console.log("Loading agent...");
