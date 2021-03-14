@@ -61,7 +61,14 @@ export class WorldScene extends Phaser.Scene {
     // this is to avoid the pixel aliasing (appears as a border on every tile when moving)
     // note that it is also available as option in startFollow()
     this.cameras.main.setRoundPixels(true);
-    this.chunkManager = new ChunkManager();
+    const minVisibilityRadius = Math.max(
+      adventureData.gameScreenWidth,
+      adventureData.gameScreenHeight
+    );
+    this.chunkManager = new ChunkManager(
+      Math.max(minVisibilityRadius, 1000),
+      128 + Math.max(minVisibilityRadius, 1000)
+    );
     await this.chunkManager.loadWorld(adventureData.initialWorld);
     //now the world data is loaded, the chunkmanager will load the needed chunks during the update()
     this.scene.resume();

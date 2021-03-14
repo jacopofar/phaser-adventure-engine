@@ -9,8 +9,8 @@ import { WorldScene } from "./scenes/main-scene";
  */
 export type AdventureConfig = {
   gameTitle: string;
-  gameWidth: integer;
-  gameHeight: integer;
+  gameScreenWidth: integer;
+  gameScreenHeight: integer;
   playerSpritesheet: string;
   startX: integer;
   startY: integer;
@@ -34,11 +34,16 @@ export class AdventureData {
   private _playerSpriteHeight: integer;
   private _tileWidthDefault: integer;
   private _tileHeightDefault: integer;
+  private _gameScreenHeight: integer;
+  private _gameScreenWidth: integer;
 
   constructor(config: AdventureConfig) {
     this._playerSpritesheet = config.playerSpritesheet;
     this._startX = config.startX;
     this._startY = config.startY;
+    this._gameScreenHeight = config.gameScreenHeight;
+    this._gameScreenWidth = config.gameScreenWidth;
+
     this._initialWorld = config.initialWorld;
     this._playerSpriteHeight = config.playerSpriteHeight || 32;
     this._playerSpriteWidth = config.playerSpriteWidth || 32;
@@ -71,6 +76,14 @@ export class AdventureData {
   }
   get tileWidthDefault(): integer {
     return this._tileWidthDefault;
+  }
+
+  get gameScreenWidth(): integer {
+    return this._gameScreenWidth;
+  }
+
+  get gameScreenHeight(): integer {
+    return this._gameScreenHeight;
   }
 
   static getGameData(scene: WorldScene) {

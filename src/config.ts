@@ -6,8 +6,8 @@ export const PhaserConfig = (
 ): Phaser.Types.Core.GameConfig => ({
   title: config.gameTitle,
   version: "0.1",
-  width: config.gameWidth,
-  height: config.gameHeight,
+  width: config.gameScreenWidth,
+  height: config.gameScreenHeight,
   type: Phaser.AUTO,
   parent: "game",
   physics: {

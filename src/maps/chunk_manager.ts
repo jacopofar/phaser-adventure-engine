@@ -119,6 +119,7 @@ export class ChunkManager {
       this.unloadDist / Math.min(this.world.multiplierX, this.world.multiplierY)
     );
 
+
     for (let offx = -maxOffset; offx <= maxOffset; offx++) {
       for (let offy = -maxOffset; offy <= maxOffset; offy++) {
         const thisChunk = `${curChunkX + offx}_${curChunkY + offy}`;
@@ -139,7 +140,7 @@ export class ChunkManager {
             maxunloadX < minChunkX ||
             minunloadX > maxChunkX ||
             maxunloadY < minChunkY ||
-            minunloadY > minChunkY
+            minunloadY > maxChunkY
           ) {
             this.loadedChunks[thisChunk].unload();
             delete this.loadedChunks[thisChunk];
