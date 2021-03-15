@@ -34,17 +34,16 @@ export class WorldScene extends Phaser.Scene {
 
     this.obstacles = this.physics.add.staticGroup();
     this.movingPawns = this.physics.add.group();
-    this.playerPawn = await Pawn.createPawn(
-      this,
-      adventureData.startX,
-      adventureData.startX,
-      adventureData.playerSpriteSheet,
-      adventureData.playerSpriteHeight,
-      adventureData.playerSpriteWidth,
-      1,
-      "immovable",
-      128
-    );
+    this.playerPawn = await Pawn.createPawn(this, {
+      x: adventureData.startX,
+      y: adventureData.startX,
+      spritesheet: adventureData.playerSpriteSheet,
+      frameHeight: adventureData.playerSpriteHeight,
+      frameWidth: adventureData.playerSpriteWidth,
+      depth: 1,
+      collide: "immovable",
+      movementSpeed: 128,
+    });
     // TODO: this will later handle the logic for the game interaction
     this.physics.add.collider(this.playerPawn, this.obstacles, (a, b) => {
       // console.log("collision with static object", a, b);

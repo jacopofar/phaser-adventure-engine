@@ -122,19 +122,20 @@ export class Chunk {
             const as = new DecorativeAgent();
             this.agents.push(as);
 
-            const { shouldUpdate } = await as.load(
-              targetScene,
-              obj.x + x,
-              obj.y + y,
-              basePath + obj.properties.spritesheet,
-              obj.properties.frameHeight || adventureData.tileHeightDefault,
-              obj.properties.frameWidth || adventureData.tileWidthDefault,
-              layerDepth * 10,
-              obj.properties.path,
-              obj.properties.collide || "no",
-              obj.properties.stepDuration || 1000,
-              obj.properties.movementSpeed || 100
-            );
+            const { shouldUpdate } = await as.load(targetScene, {
+              x: obj.x + x,
+              y: obj.y + y,
+              spritesheet: basePath + obj.properties.spritesheet,
+              frameHeight:
+                obj.properties.frameHeight || adventureData.tileHeightDefault,
+              frameWidth:
+                obj.properties.frameWidth || adventureData.tileWidthDefault,
+              depth: layerDepth * 10,
+              path: obj.properties.path,
+              collide: obj.properties.collide || "no",
+              stepDuration: obj.properties.stepDuration || 1000,
+              movementSpeed: obj.properties.movementSpeed || 100,
+            });
             if (shouldUpdate) {
               this.toUpdate.push(as);
             }

@@ -1,9 +1,13 @@
 import { WorldScene } from "../scenes/main-scene";
 import { getSpritesheet } from "./spritesheets";
-import { Pawn } from "./pawn";
+import { Pawn, PawnConfig } from "./pawn";
 
 type PathOp = "up" | "down" | "right" | "left" | "idle";
-
+interface DecorativeAgentConfig extends PawnConfig {
+  stepDuration: integer;
+  movementSpeed: integer;
+  path: string;
+}
 /**
  * An agent without interaction, it moves following a path or stands still.
  */
@@ -15,32 +19,12 @@ export class DecorativeAgent {
   private timeInCycle: integer = 0;
   private stepDuration: integer = 1000;
 
-  async load(
-    targetScene: WorldScene,
-    x: integer,
-    y: integer,
-    spritesheet: string,
-    frameHeight: integer,
-    frameWidth: integer,
-    depth: integer,
-    path: string = null,
-    collide: "no" | "immovable" | "try" = "no",
-    stepDuration: integer,
-    movementSpeed: integer
-  ) {
-    this.stepDuration = stepDuration;
-    this.path = (path?.split(",") || []).map((p) => p.trim().toLowerCase());
-    this.pawn = await Pawn.createPawn(
-      targetScene,
-      x,
-      y,
-      spritesheet,
-      frameHeight,
-      frameWidth,
-      depth,
-      collide,
-      movementSpeed
+  async load(targetScene: WorldScene, config: DecorativeAgentConfig) {
+    this.stepDuration = config.stepDuration;
+    this.path = (config.path?.split(",") || []).map((p) =>
+      p.trim().toLowerCase()
     );
+    this.pawn = await Pawn.createPawn(targetScene, config);
 
     return { shouldUpdate: this.path.length > 0 };
   }
