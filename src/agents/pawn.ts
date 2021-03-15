@@ -20,6 +20,7 @@ export class Pawn extends Phaser.Physics.Arcade.Sprite {
   private spritesheet: string;
   private currentState: PathOp = null;
   private movementSpeed: integer;
+  private collideFun: (other: any) => void;
 
   construnctor() {
     // the constructor cannot be async, and creating a pawn without the data
@@ -106,5 +107,15 @@ export class Pawn extends Phaser.Physics.Arcade.Sprite {
       this.play(this.spritesheet + "_" + op);
     }
     this.currentState = op;
+  }
+
+  onCollide(cb: (other: any) => void) {
+    this.collideFun = cb;
+  }
+
+  collide(other: any) {
+    if (this.collideFun) {
+      this.collideFun(other);
+    }
   }
 }

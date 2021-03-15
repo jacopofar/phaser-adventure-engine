@@ -16,7 +16,6 @@ type AgentConfig = { states: AgentState[] };
 export class FullAgent {
   private agentId: string;
   private config: AgentConfig;
-  private currentStateIdx: integer;
   private aspect?: DecorativeAgent;
   private basePath: string;
 
@@ -30,41 +29,54 @@ export class FullAgent {
     console.log("Loading agent: ", this.agentId);
     // determine the state to use, is the first that has no unmet conditions
     // TODO implement this, for now set it to 0
-    this.currentStateIdx = 0;
-    // now load the aspect corresponding to the state, if any
-    if (this.config.states[this.currentStateIdx].aspect) {
+    await this.activateState(0, targetScene, x, y);
+
+    return { shouldUpdate: true };
+  }
+
+  private async activateState(
+    idx: integer,
+    targetScene: WorldScene,
+    x: integer,
+    y: integer
+  ) {
+    // TODO check whether the aspect is the same as before
+    // load the aspect corresponding to the state, if any
+    if (this.config.states[idx].aspect) {
       console.log(
         "Spritesheet for full agent, base path: ",
         this.basePath,
         " relative path: ",
-        this.config.states[this.currentStateIdx].aspect.spritesheet
+        this.config.states[idx].aspect.spritesheet
       );
       this.aspect = new DecorativeAgent();
       let spriteSheetPath: string;
-      if (
-        this.config.states[this.currentStateIdx].aspect.spritesheet.startsWith(
-          "/"
-        )
-      ) {
-        spriteSheetPath = this.config.states[this.currentStateIdx].aspect
-          .spritesheet;
+      if (this.config.states[idx].aspect.spritesheet.startsWith("/")) {
+        spriteSheetPath = this.config.states[idx].aspect.spritesheet;
       } else {
         spriteSheetPath =
-          this.basePath +
-          this.config.states[this.currentStateIdx].aspect.spritesheet;
+          this.basePath + this.config.states[idx].aspect.spritesheet;
       }
       await this.aspect.load(targetScene, {
-        ...this.config.states[this.currentStateIdx].aspect,
+        ...this.config.states[idx].aspect,
         spritesheet: spriteSheetPath,
         x,
         y,
       });
       // execute on_init, if present
-      if (this.config.states[this.currentStateIdx].on_init){
-        await this.run(this.config.states[this.currentStateIdx].on_init);
+      if (this.config.states[idx].on_init) {
+        await this.run(this.config.states[idx].on_init, null);
       }
     }
-    return { shouldUpdate: true };
+    if (this.config.states[idx].on_touch) {
+      if (!this.config.states[idx].aspect) {
+        throw new Error("Cannot collide if no aspect is defined!");
+      }
+      this.aspect.onCollide(async (other) => {
+        //note: this is not awaited
+        this.run(this.config.states[idx].on_touch, other);
+      });
+    }
   }
   update(time: number, delta: number) {
     this.aspect?.update(time, delta);
@@ -72,8 +84,8 @@ export class FullAgent {
   destroy(): void {
     this.aspect?.destroy();
   }
-  private async run(commands: AgentCommand[]){
+  private async run(commands: AgentCommand[], other: any) {
     // TODO implement this
-    console.log('Requested execution of commands: ', commands);
+    console.log("Requested execution of commands: ", commands);
   }
 }

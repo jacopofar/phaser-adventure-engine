@@ -53,6 +53,7 @@ export class WorldScene extends Phaser.Scene {
     this.physics.add.collider(this.movingPawns, this.obstacles);
     this.physics.add.collider(this.playerPawn, this.movingPawns, (a, b) => {
       // console.log("collision with moving sprite", a, b);
+      (b as Pawn).collide(a);
     });
     this.cursors = this.input.keyboard.createCursorKeys();
     this.cameras.main.startFollow(this.playerPawn);
