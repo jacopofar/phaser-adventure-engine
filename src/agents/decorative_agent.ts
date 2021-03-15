@@ -1,11 +1,9 @@
 import { WorldScene } from "../scenes/main-scene";
-import { getSpritesheet } from "./spritesheets";
 import { Pawn, PawnConfig } from "./pawn";
 
 type PathOp = "up" | "down" | "right" | "left" | "idle";
-interface DecorativeAgentConfig extends PawnConfig {
+export interface DecorativeAgentConfig extends PawnConfig {
   stepDuration: integer;
-  movementSpeed: integer;
   path: string;
 }
 /**
@@ -14,7 +12,6 @@ interface DecorativeAgentConfig extends PawnConfig {
 export class DecorativeAgent {
   private staticImage: Phaser.GameObjects.Image;
   private pawn: Pawn;
-
   private path: string[];
   private timeInCycle: integer = 0;
   private stepDuration: integer = 1000;

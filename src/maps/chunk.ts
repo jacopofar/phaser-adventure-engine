@@ -30,7 +30,7 @@ type ShownElement =
  */
 export class Chunk {
   private sprites: ShownElement[] = [];
-  private agents: DecorativeAgent[] = [];
+  private agents: (DecorativeAgent | FullAgent)[] = [];
   private toUpdate: updatable[] = [];
   private mapPath: string;
 
@@ -121,6 +121,7 @@ export class Chunk {
           if (typeof obj.properties?.spritesheet !== "undefined") {
             const as = new DecorativeAgent();
             this.agents.push(as);
+            // console.log('Decorative agent spritesheet path:', basePath + obj.properties.spritesheet)
 
             const { shouldUpdate } = await as.load(targetScene, {
               x: obj.x + x,
@@ -148,8 +149,13 @@ export class Chunk {
             const agentConfig = (
               await axios.get(basePath + obj.properties.agent)
             ).data;
-            const fa = new FullAgent(agentId, agentConfig);
-            const { shouldUpdate } = await fa.load();
+            const fa = new FullAgent(
+              basePath + obj.properties.agent,
+              agentId,
+              agentConfig
+            );
+            this.agents.push(fa);
+            const { shouldUpdate } = await fa.load(targetScene, obj.x, obj.y);
             if (shouldUpdate) {
               this.toUpdate.push(fa);
             }
