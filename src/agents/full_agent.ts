@@ -1,9 +1,21 @@
 import { WorldScene } from "../scenes/main-scene";
 import { DecorativeAgent, DecorativeAgentConfig } from "./decorative_agent";
+import { say } from "../agents/commands/dialog";
+import { teleport } from "../agents/commands/teleport";
 
-type AgentCommand = {
-  command: "say" | "teleport";
+type SayCommand = {
+  command: "say";
+  msg: string | string[];
 };
+
+type TeleportCommand = {
+  command: "teleport";
+  map: string;
+  x: integer;
+  y: integer;
+};
+type AgentCommand = SayCommand | TeleportCommand;
+
 type AgentState = {
   // TODO it's not a string, yet to decide
   conditions?: string[];
@@ -18,6 +30,7 @@ export class FullAgent {
   private config: AgentConfig;
   private aspect?: DecorativeAgent;
   private basePath: string;
+  private scene: WorldScene;
 
   constructor(agentPath: string, agentId: string, agentConfig: any) {
     this.agentId = agentId;
@@ -27,6 +40,7 @@ export class FullAgent {
 
   async load(targetScene: WorldScene, x: integer, y: integer) {
     console.log("Loading agent: ", this.agentId);
+    this.scene = targetScene;
     // determine the state to use, is the first that has no unmet conditions
     // TODO implement this, for now set it to 0
     await this.activateState(0, targetScene, x, y);
@@ -86,6 +100,17 @@ export class FullAgent {
   }
   private async run(commands: AgentCommand[], other: any) {
     // TODO implement this
-    console.log("Requested execution of commands: ", commands);
+    for (let idx = 0; idx < commands.length; idx++) {
+      const cmd = commands[idx];
+      if (cmd.command == "say") {
+        await say(this.scene, cmd.msg);
+        continue;
+      }
+      if (cmd.command == "teleport") {
+        await teleport(this.scene, cmd.map, cmd.x, cmd.y);
+        continue;
+      }
+      throw new Error("Unknown command " + cmd);
+    }
   }
 }

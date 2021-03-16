@@ -1,7 +1,8 @@
 import { WorldScene } from "../scenes/main-scene";
 import { getSpritesheet } from "./spritesheets";
 
-type PathOp = "up" | "down" | "right" | "left" | "idle";
+export type PathOp = "up" | "down" | "right" | "left" | "idle";
+
 export interface PawnConfig {
   x: integer;
   y: integer;

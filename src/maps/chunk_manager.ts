@@ -68,6 +68,13 @@ export class ChunkManager {
       worldData.patterns[0].regexp,
       worldPath
     );
+    if (pathPre !== this?.world?.pathPre){
+        // the world has changed (e.g. a teleport), unload chunks and invalidate position
+        Object.values(this.loadedChunks).forEach(c => c.unload());
+        this.loadedChunks = {};
+        this.latestPosX = null
+        this.latestPosY = null
+    }
     const {
       multiplierX,
       multiplierY,

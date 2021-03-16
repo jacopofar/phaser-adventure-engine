@@ -16,6 +16,13 @@ export class DecorativeAgent {
   private timeInCycle: integer = 0;
   private stepDuration: integer = 1000;
 
+  get x(): integer {
+    return this.pawn.x;
+  }
+  get y(): integer {
+    return this.pawn.x;
+  }
+
   async load(targetScene: WorldScene, config: DecorativeAgentConfig) {
     this.stepDuration = config.stepDuration;
     this.path = (config.path?.split(",") || []).map((p) =>
