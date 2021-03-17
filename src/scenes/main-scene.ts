@@ -94,54 +94,69 @@ export class WorldScene extends Phaser.Scene {
   addCollidingPawn(pawn: Pawn) {
     this.movingPawns.add(pawn);
   }
+  /**
+   * Performs the agent interaction if there's a Pawn facing the player one
+   */
+  private async performInteraction() {
+    // determine where it is facing
+    let offx: integer = 0;
+    let offy: integer = 0;
+    if (this.facingDirection === "right") {
+      offx = this.playerPawn.width;
+    }
+    if (this.facingDirection === "left") {
+      offx = -this.playerPawn.width;
+    }
+    if (this.facingDirection === "up") {
+      offy = -this.playerPawn.height;
+    }
+    if (this.facingDirection === "down") {
+      offy = this.playerPawn.height;
+    }
+
+    const dynBodies = this.physics.overlapRect(
+      this.playerPawn.x + offx,
+      this.playerPawn.y + offy,
+      this.playerPawn.width,
+      this.playerPawn.height,
+      true,
+      false
+    );
+    for (const bod of dynBodies) {
+      const obj = bod.gameObject;
+      if (Pawn.isPawn(obj) && obj !== this.playerPawn) {
+        await obj.interact();
+      }
+    }
+  }
 
   async update(time: number, delta: number): Promise<void> {
     if (this.reactToInput) {
       if (this.cursors.space.isDown && !this.currentlyInteracting) {
         this.currentlyInteracting = true;
-        // determine where it is facing
-        let offx: integer = 0;
-        let offy: integer = 0;
-        if (this.facingDirection === "right") {
-          offx = this.playerPawn.width;
-        }
-        if (this.facingDirection === "left") {
-          offx = -this.playerPawn.width;
-        }
-        if (this.facingDirection === "up") {
-          offy = -this.playerPawn.height;
-        }
-        if (this.facingDirection === "down") {
-          offy = this.playerPawn.height;
-        }
-
-        const dynBodies = this.physics.overlapRect(
-          this.playerPawn.x + offx,
-          this.playerPawn.y + offy,
-          this.playerPawn.width,
-          this.playerPawn.height,
-          true,
-          false
-        );
-        for (const bod of dynBodies) {
-          const obj = bod.gameObject;
-          if (Pawn.isPawn(obj)) {
-            await obj.interact();
-          }
-        }
+        await this.performInteraction();
         this.currentlyInteracting = false;
       }
 
-      const previousDirection = this.currentMovementOp;
       // if mouse/touch is used, ignore the keyboard
       if (this.game.input.activePointer.isDown) {
         const deltaX = this.game.input.activePointer.worldX - this.playerPawn.x;
         const deltaY = this.game.input.activePointer.worldY - this.playerPawn.y;
-        // there is no idle when the click is used, always a currentMovementOp
-        if (Math.abs(deltaX) > Math.abs(deltaY)) {
-          this.currentMovementOp = deltaX > 0 ? "right" : "left";
+        // if the distance is less than player sprite width, assume it's an interaction
+        if (
+          Math.sqrt(deltaX ** 2 + deltaY ** 2) < this.playerPawn.width &&
+          !this.currentlyInteracting
+        ) {
+          this.currentlyInteracting = true;
+          await this.performInteraction();
+          this.currentlyInteracting = false;
         } else {
-          this.currentMovementOp = deltaY > 0 ? "down" : "up";
+          // there is no idle when the click is used, always a currentMovementOp
+          if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            this.currentMovementOp = deltaX > 0 ? "right" : "left";
+          } else {
+            this.currentMovementOp = deltaY > 0 ? "down" : "up";
+          }
         }
       } else {
         // no mouse, maybe it is keyboard
