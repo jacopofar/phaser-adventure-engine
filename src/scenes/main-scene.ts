@@ -123,7 +123,6 @@ export class WorldScene extends Phaser.Scene {
           true,
           false
         );
-        console.log("Bodies around:", dynBodies);
         for (const bod of dynBodies) {
           const obj = bod.gameObject;
           if (Pawn.isPawn(obj)) {
