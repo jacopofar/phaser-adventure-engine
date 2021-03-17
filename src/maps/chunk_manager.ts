@@ -3,6 +3,7 @@ const axios = require("axios").default;
 
 import { Chunk } from "./chunk";
 import { WorldScene } from "../scenes/main-scene";
+import { resolvePath } from "../utils";
 
 /**
  * The world properties, using the same names as the Tiled JSON for *.world files
@@ -187,8 +188,6 @@ export class ChunkManager {
     regex: string,
     worldPath: string
   ): { pathPre: string; pathMiddle: string; pathPost: string } {
-    const worldFolder = worldPath.slice(0, worldPath.lastIndexOf("/") + 1);
-
     let parts = regex.split(/[\(\)]/);
     if (parts.length !== 5) {
       throw Error(`Invalid regex: ${regex}`);
@@ -199,7 +198,7 @@ export class ChunkManager {
     });
 
     return {
-      pathPre: worldFolder + parts[0],
+      pathPre: resolvePath(worldPath, parts[0]),
       pathMiddle: parts[2],
       pathPost: parts[4],
     };

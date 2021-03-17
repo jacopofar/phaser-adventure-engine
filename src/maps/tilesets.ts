@@ -1,3 +1,4 @@
+import { resolvePath } from "../utils";
 const axios = require("axios").default;
 
 type TilesProperties = Record<integer, { collide?: boolean }>;
@@ -17,7 +18,7 @@ export const getTileset = async (
     return loadedTilesets[path];
   }
   const data = (await axios.get(path)).data;
-  const imagePath = path.slice(0, path.lastIndexOf("/") + 1) + data.image;
+  const imagePath = resolvePath(path, data.image);
 
   const size = Math.floor(
     ((data.imagewidth / data.tilewidth) * data.imageheight) / data.tileheight

@@ -2,6 +2,7 @@ import { WorldScene } from "../scenes/main-scene";
 import { DecorativeAgent, DecorativeAgentConfig } from "./decorative_agent";
 import { say } from "../agents/commands/dialog";
 import { teleport } from "../agents/commands/teleport";
+import { resolvePath } from "../utils";
 
 type SayCommand = {
   command: "say";
@@ -36,7 +37,7 @@ export class FullAgent {
   constructor(agentPath: string, agentId: string, agentConfig: any) {
     this.agentId = agentId;
     this.config = agentConfig;
-    this.basePath = agentPath.slice(0, agentPath.lastIndexOf("/") + 1);
+    this.basePath = agentPath;
   }
 
   async load(targetScene: WorldScene, x: integer, y: integer) {
@@ -58,19 +59,15 @@ export class FullAgent {
     // TODO check whether the aspect is the same as before
     // load the aspect corresponding to the state, if any
     if (this.config.states[idx].aspect) {
-      console.log(
-        "Spritesheet for full agent, base path: ",
-        this.basePath,
-        " relative path: ",
-        this.config.states[idx].aspect.spritesheet
-      );
       this.aspect = new DecorativeAgent();
       let spriteSheetPath: string;
       if (this.config.states[idx].aspect.spritesheet.startsWith("/")) {
         spriteSheetPath = this.config.states[idx].aspect.spritesheet;
       } else {
-        spriteSheetPath =
-          this.basePath + this.config.states[idx].aspect.spritesheet;
+        spriteSheetPath = resolvePath(
+          this.basePath,
+          this.config.states[idx].aspect.spritesheet
+        );
       }
       await this.aspect.load(targetScene, {
         ...this.config.states[idx].aspect,

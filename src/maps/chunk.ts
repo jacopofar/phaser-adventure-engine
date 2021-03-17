@@ -6,6 +6,7 @@ import { getTileset } from "./tilesets";
 import { WorldScene } from "../scenes/main-scene";
 import { DecorativeAgent } from "../agents/decorative_agent";
 import { FullAgent } from "../agents/full_agent";
+import { resolvePath } from "../utils";
 
 /**
  * The map properties, using the same names as the Tiled JSON
@@ -54,7 +55,10 @@ export class Chunk {
       { sheet: string; frame: integer; collide?: boolean }
     > = {};
     for (let tileset of tilesets) {
-      let spritesheet = await getTileset(loader, basePath + tileset.source);
+      let spritesheet = await getTileset(
+        loader,
+        resolvePath(basePath, tileset.source)
+      );
       for (let i = 0; i < spritesheet.size; i++) {
         transl[tileset.firstgid + i] = {
           sheet: spritesheet.name,
@@ -98,13 +102,12 @@ export class Chunk {
     // (e.g. is it orthogonal? compressed? wrong renderorder?) and raise clear errors if needed
     // this could be useful: https://github.com/gcanti/io-ts
     const { height, width, tilewidth, tileheight } = mapData;
-    const basePath = mapPath.slice(0, mapPath.lastIndexOf("/") + 1);
 
     // first step: load all the tilesets and calculate their map ids
     // note: this also loads the tilesets in the Phaser scene if not there already
     const transl = await this.retrieveTileset(
       targetScene.load,
-      basePath,
+      mapPath,
       mapData.tilesets
     );
 
@@ -126,7 +129,7 @@ export class Chunk {
             const { shouldUpdate } = await as.load(targetScene, {
               x: obj.x + x,
               y: obj.y + y,
-              spritesheet: basePath + obj.properties.spritesheet,
+              spritesheet: resolvePath(mapPath, obj.properties.spritesheet),
               frameHeight:
                 obj.properties.frameHeight || adventureData.tileHeightDefault,
               frameWidth:
@@ -147,10 +150,10 @@ export class Chunk {
             const agentId: string =
               obj.properties.agent_id || this.mapPath + "_" + obj.id;
             const agentConfig = (
-              await axios.get(basePath + obj.properties.agent)
+              await axios.get(resolvePath(mapPath, obj.properties.agent))
             ).data;
             const fa = new FullAgent(
-              basePath + obj.properties.agent,
+              resolvePath(mapPath, obj.properties.agent),
               agentId,
               agentConfig
             );
