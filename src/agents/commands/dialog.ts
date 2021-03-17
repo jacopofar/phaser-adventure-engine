@@ -5,7 +5,7 @@ export function say(scene: WorldScene, msgs: string | string[]): Promise<void> {
   scene.ignoreInput(true);
   const scrOrigin = scene.cameras.main.getWorldPoint(0, 0);
   const g = scene.add.graphics({
-    lineStyle: { width: 1, color: 0x000000 },
+    lineStyle: { width: 10, color: 0x000000 },
     fillStyle: { color: 0xffffff },
   });
   const padding = 20;
@@ -34,18 +34,18 @@ export function say(scene: WorldScene, msgs: string | string[]): Promise<void> {
   txt.depth = 9000;
   let txtIdx = 0;
 
-  const realText = (typeof msgs == 'string') ? msgs : msgs.join('\n');
+  const realText = typeof msgs == "string" ? msgs : msgs.join("\n");
   return new Promise<void>((resolve, reject) => {
     const handler = setInterval(() => {
       txtIdx++;
       txt.text = realText.substr(0, txtIdx);
-      if (txtIdx > realText.length){
+      if (txtIdx > realText.length) {
         clearInterval(handler);
         scene.ignoreInput(false);
         txt.destroy();
         g.destroy();
         resolve();
       }
-    }, 100);
-  })
+    }, 20);
+  });
 }

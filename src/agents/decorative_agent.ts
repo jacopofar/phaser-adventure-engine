@@ -53,4 +53,7 @@ export class DecorativeAgent {
   onCollide(cb: (other: any) => void) {
     this.pawn.onCollide(cb);
   }
+  onInteract(cb: () => void) {
+    this.pawn.onInteract(cb);
+  }
 }

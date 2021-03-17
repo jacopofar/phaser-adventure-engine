@@ -22,6 +22,7 @@ type AgentState = {
   aspect?: DecorativeAgentConfig;
   on_touch?: AgentCommand[];
   on_init?: AgentCommand[];
+  on_interact?: AgentCommand[];
 };
 type AgentConfig = { states: AgentState[] };
 
@@ -87,8 +88,15 @@ export class FullAgent {
         throw new Error("Cannot collide if no aspect is defined!");
       }
       this.aspect.onCollide(async (other) => {
-        //note: this is not awaited
-        this.run(this.config.states[idx].on_touch, other);
+        await this.run(this.config.states[idx].on_touch, other);
+      });
+    }
+    if (this.config.states[idx].on_interact) {
+      if (!this.config.states[idx].aspect) {
+        throw new Error("Cannot interact if no aspect is defined!");
+      }
+      this.aspect.onInteract(async () => {
+        await this.run(this.config.states[idx].on_interact);
       });
     }
   }
@@ -98,7 +106,7 @@ export class FullAgent {
   destroy(): void {
     this.aspect?.destroy();
   }
-  private async run(commands: AgentCommand[], other: any) {
+  private async run(commands: AgentCommand[], other: any = null) {
     // TODO implement this
     for (let idx = 0; idx < commands.length; idx++) {
       const cmd = commands[idx];

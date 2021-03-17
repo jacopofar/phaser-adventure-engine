@@ -11,8 +11,10 @@ export class WorldScene extends Phaser.Scene {
   private playerPawn: Pawn;
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   private chunkManager: ChunkManager;
-  private direction: PathOp = "idle";
+  private currentMovementOp: PathOp = "idle";
+  private facingDirection: PathOp = "idle";
   private reactToInput: boolean = true;
+  private currentlyInteracting: boolean = false;
 
   constructor() {
     super({ key: "MainScene" });
@@ -95,31 +97,70 @@ export class WorldScene extends Phaser.Scene {
 
   async update(time: number, delta: number): Promise<void> {
     if (this.reactToInput) {
-      const previousDirection = this.direction;
+      if (this.cursors.space.isDown && !this.currentlyInteracting) {
+        this.currentlyInteracting = true;
+        // determine where it is facing
+        let offx: integer = 0;
+        let offy: integer = 0;
+        if (this.facingDirection === "right") {
+          offx = this.playerPawn.width;
+        }
+        if (this.facingDirection === "left") {
+          offx = -this.playerPawn.width;
+        }
+        if (this.facingDirection === "up") {
+          offy = -this.playerPawn.height;
+        }
+        if (this.facingDirection === "down") {
+          offy = this.playerPawn.height;
+        }
+
+        const dynBodies = this.physics.overlapRect(
+          this.playerPawn.x + offx,
+          this.playerPawn.y + offy,
+          this.playerPawn.width,
+          this.playerPawn.height,
+          true,
+          false
+        );
+        console.log("Bodies around:", dynBodies);
+        for (const bod of dynBodies) {
+          const obj = bod.gameObject;
+          if (Pawn.isPawn(obj)) {
+            await obj.interact();
+          }
+        }
+        this.currentlyInteracting = false;
+      }
+
+      const previousDirection = this.currentMovementOp;
       // if mouse/touch is used, ignore the keyboard
       if (this.game.input.activePointer.isDown) {
         const deltaX = this.game.input.activePointer.worldX - this.playerPawn.x;
         const deltaY = this.game.input.activePointer.worldY - this.playerPawn.y;
-        // there is no idle when the click is used, always a direction
+        // there is no idle when the click is used, always a currentMovementOp
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
-          this.direction = deltaX > 0 ? "right" : "left";
+          this.currentMovementOp = deltaX > 0 ? "right" : "left";
         } else {
-          this.direction = deltaY > 0 ? "down" : "up";
+          this.currentMovementOp = deltaY > 0 ? "down" : "up";
         }
       } else {
         // no mouse, maybe it is keyboard
         if (this.cursors.left.isDown || this.cursors.right.isDown) {
-          this.direction = this.cursors.left.isDown ? "left" : "right";
+          this.currentMovementOp = this.cursors.left.isDown ? "left" : "right";
         } else {
           if (this.cursors.up.isDown || this.cursors.down.isDown) {
-            this.direction = this.cursors.up.isDown ? "up" : "down";
+            this.currentMovementOp = this.cursors.up.isDown ? "up" : "down";
           } else {
             // nothing being pressed
-            this.direction = "idle";
+            this.currentMovementOp = "idle";
           }
         }
       }
-      this.playerPawn.move(this.direction);
+      this.playerPawn.move(this.currentMovementOp);
+      if (this.currentMovementOp !== "idle") {
+        this.facingDirection = this.currentMovementOp;
+      }
 
       await this.chunkManager.handleNewPosition(
         this,
@@ -132,7 +173,7 @@ export class WorldScene extends Phaser.Scene {
   ignoreInput(state: boolean) {
     this.reactToInput = !state;
   }
-  async teleport(map: string, x: integer, y: integer){
+  async teleport(map: string, x: integer, y: integer) {
     await this.chunkManager.loadWorld(map);
     this.playerPawn.x = x;
     this.playerPawn.y = y;
