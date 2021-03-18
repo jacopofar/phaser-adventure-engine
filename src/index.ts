@@ -4,6 +4,8 @@ const axios = require("axios").default;
 import { PhaserConfig } from "./config";
 import { WorldScene } from "./scenes/main-scene";
 
+import { GameGlobalConfig } from "./generated_types/game";
+
 /**
  * Data loaded from the game.json
  */
@@ -96,7 +98,8 @@ export class AdventureData {
 
 window.addEventListener("load", async () => {
   try {
-    const config: AdventureConfig = (await axios.get("/game/game.json")).data;
+    const config: AdventureConfig = (await axios.get("/game/game.json"))
+      .data as GameGlobalConfig;
     const game = new Phaser.Game(PhaserConfig(config));
     AdventureData.setConfig(game, config);
   } catch (error) {

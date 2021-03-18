@@ -27,3 +27,4 @@ These are used to develop and test the application.
 - webpack-dev-server: runs an HTTP server with automatic reload upon changes
 - axios-mock-adapter: mocks axios requests for testing
 - prettier: linting and reformatting
+- json-schema-to-typescript: generates the TS types from JSONschemas

@@ -1,0 +1,20 @@
+{
+  "title": "Tiled Tileset",
+  "type": "object",
+  "properties": {
+    "image": { "type": "string" },
+    "imagewidth": { "type": "number" },
+    "imageheight": { "type": "number" },
+    "tilewidth": { "type": "number" },
+    "tileheight": { "type": "number" },
+    "tileproperties": {
+      "type": "object",
+      "patternProperties": {
+        "^\\d+$": { "type": "object" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true,
+  "required": ["image", "imageheight", "imagewidth", "tilewidth", "tileheight"]
+}

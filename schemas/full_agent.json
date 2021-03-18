@@ -1,0 +1,84 @@
+{
+  "title": "Full agent config",
+  "definitions": {
+    "command": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "command": "teleport",
+            "x": { "type": "integer" },
+            "y": { "type": "integer" },
+            "map": { "type": "string" }
+          },
+          "additionalProperties": false,
+          "required": ["command", "map", "x", "y"]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "command": "say",
+            "msg": { "type": "string" }
+          },
+          "additionalProperties": false,
+          "required": ["command", "msg"]
+        }
+      ]
+    }
+  },
+  "type": "object",
+  "properties": {
+    "states": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "conditions": { "type": "array" },
+          "aspect": {
+            "type": "object",
+            "properties": {
+              "spritesheet": { "type": "string" },
+              "frameHeight": { "type": "integer" },
+              "frameWidth": { "type": "integer" },
+              "depth": { "type": "integer" },
+              "collide": {
+                "type": "string",
+                "enum": ["try", "no", "immovable"]
+              },
+              "movementSpeed": { "type": "integer" },
+              "stepDuration": { "type": "integer" },
+              "path": { "type": "string" }
+            },
+            "additionalProperties": false,
+            "required": [
+              "spritesheet",
+              "frameHeight",
+              "frameWidth",
+              "depth",
+              "collide",
+              "movementSpeed",
+              "stepDuration",
+              "path"
+            ]
+          },
+          "on_interact": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/command" }
+          },
+          "on_touch": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/command" }
+          },
+          "on_init": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/command" }
+          }
+        },
+        "additionalProperties": false,
+        "required": ["conditions"]
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": ["states"]
+}

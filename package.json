@@ -6,6 +6,7 @@
     "copy-webpack-plugin": "^7.0.0",
     "html-webpack-plugin": "^4.5.1",
     "jest": "^26.6.3",
+    "json-schema-to-typescript": "^10.1.3",
     "prettier": "2.2.1",
     "ts-jest": "^26.4.4",
     "ts-loader": "^8.0.14",
@@ -18,7 +19,8 @@
     "dev-build": "webpack --mode=development",
     "dev-serve": "webpack serve --open --mode=development",
     "prod-build": "webpack --mode=production",
-    "test": "jest"
+    "test": "jest",
+    "generate-types-from-jsonschema": "json2ts -i schemas/ -o src/generated_types/"
   },
   "dependencies": {
     "axios": "^0.21.1",

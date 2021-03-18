@@ -1,0 +1,25 @@
+{
+  "title": "Game global config",
+  "type": "object",
+  "properties": {
+    "gameTitle": { "type": "string" },
+    "gameScreenWidth": { "type": "number" },
+    "gameScreenHeight": { "type": "number" },
+    "playerSpritesheet": { "type": "string" },
+    "startX": { "type": "number" },
+    "startY": { "type": "number" },
+    "initialWorld": { "type": "string" },
+    "playerSpriteHeight": { "type": "number" },
+    "playerSpriteWidth": { "type": "number" }
+  },
+  "additionalProperties": false,
+  "required": [
+    "gameTitle",
+    "gameScreenWidth",
+    "gameScreenHeight",
+    "playerSpritesheet",
+    "startX",
+    "startY",
+    "initialWorld"
+  ]
+}

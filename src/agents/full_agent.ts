@@ -3,38 +3,20 @@ import { DecorativeAgent, DecorativeAgentConfig } from "./decorative_agent";
 import { say } from "../agents/commands/dialog";
 import { teleport } from "../agents/commands/teleport";
 import { resolvePath } from "../utils";
-
-type SayCommand = {
-  command: "say";
-  msg: string | string[];
-};
-
-type TeleportCommand = {
-  command: "teleport";
-  map: string;
-  x: integer;
-  y: integer;
-};
-type AgentCommand = SayCommand | TeleportCommand;
-
-type AgentState = {
-  // TODO it's not a string, yet to decide
-  conditions?: string[];
-  aspect?: DecorativeAgentConfig;
-  on_touch?: AgentCommand[];
-  on_init?: AgentCommand[];
-  on_interact?: AgentCommand[];
-};
-type AgentConfig = { states: AgentState[] };
+import { FullAgentConfig, Command } from "../generated_types/full_agent";
 
 export class FullAgent {
   private agentId: string;
-  private config: AgentConfig;
+  private config: FullAgentConfig;
   private aspect?: DecorativeAgent;
   private basePath: string;
   private scene: WorldScene;
 
-  constructor(agentPath: string, agentId: string, agentConfig: any) {
+  constructor(
+    agentPath: string,
+    agentId: string,
+    agentConfig: FullAgentConfig
+  ) {
     this.agentId = agentId;
     this.config = agentConfig;
     this.basePath = agentPath;
@@ -103,7 +85,7 @@ export class FullAgent {
   destroy(): void {
     this.aspect?.destroy();
   }
-  private async run(commands: AgentCommand[], other: any = null) {
+  private async run(commands: Command[], other: any = null) {
     // TODO implement this
     for (let idx = 0; idx < commands.length; idx++) {
       const cmd = commands[idx];

@@ -1,5 +1,6 @@
 import { resolvePath } from "../utils";
 const axios = require("axios").default;
+import { TiledTileset } from "../generated_types/tiled_tileset";
 
 type TilesProperties = Record<integer, { collide?: boolean }>;
 
@@ -17,7 +18,7 @@ export const getTileset = async (
   if (typeof loadedTilesets[path] !== "undefined") {
     return loadedTilesets[path];
   }
-  const data = (await axios.get(path)).data;
+  const data = (await axios.get(path)).data as TiledTileset;
   const imagePath = resolvePath(path, data.image);
 
   const size = Math.floor(

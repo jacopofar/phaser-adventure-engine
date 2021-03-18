@@ -7,6 +7,8 @@ import { WorldScene } from "../scenes/main-scene";
 import { DecorativeAgent } from "../agents/decorative_agent";
 import { FullAgent } from "../agents/full_agent";
 import { resolvePath } from "../utils";
+import { TiledMap } from "../generated_types/tiled_map";
+import { FullAgentConfig } from "../generated_types/full_agent";
 
 /**
  * The map properties, using the same names as the Tiled JSON
@@ -79,7 +81,7 @@ export class Chunk {
     // console.log('Loading chunk at ', mapPath, ' for coords', x, ' ', y);
     let mapData;
     try {
-      mapData = (await axios.get(mapPath)).data;
+      mapData = (await axios.get(mapPath)).data as TiledMap;
       this.mapPath = mapPath;
     } catch {
       for (let k = 0; k < 10; k++) {
@@ -151,7 +153,7 @@ export class Chunk {
               obj.properties.agent_id || this.mapPath + "_" + obj.id;
             const agentConfig = (
               await axios.get(resolvePath(mapPath, obj.properties.agent))
-            ).data;
+            ).data as FullAgentConfig;
             const fa = new FullAgent(
               resolvePath(mapPath, obj.properties.agent),
               agentId,
