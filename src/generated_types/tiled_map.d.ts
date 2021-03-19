@@ -17,7 +17,14 @@ export interface TiledMap {
         [k: string]: unknown;
       }
     | {
-        objects?: number[];
+        objects?: {
+          x?: number;
+          y?: number;
+          properties?: {
+            [k: string]: unknown;
+          };
+          [k: string]: unknown;
+        }[];
         type?: "objectgroup";
         [k: string]: unknown;
       }

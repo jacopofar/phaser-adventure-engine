@@ -1,0 +1,29 @@
+{
+  "title": "Tiled World file",
+  "type": "object",
+  "properties": {
+    "type": { "const": "world" },
+    "patterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "regexp": { "type": "string" },
+          "multiplierX": { "type": "integer" },
+          "multiplierY": { "type": "integer" },
+          "offsetX": { "type": "integer" },
+          "offsetY": { "type": "integer" }
+        },
+        "required": [
+          "regexp",
+          "multiplierX",
+          "multiplierY",
+          "offsetX",
+          "offsetY"
+        ]
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": ["patterns", "type"]
+}

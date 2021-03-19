@@ -14,7 +14,7 @@ export type Command =
     }
   | {
       command: "say";
-      msg: string;
+      msg: string | string[];
     };
 
 export interface FullAgentConfig {

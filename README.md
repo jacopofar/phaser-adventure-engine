@@ -18,3 +18,15 @@ You can look at [dependencies_reason.md](dependencies_reason.md) for an explanat
 
 The schemas under the schemas folder are used both to validate the files for a project and to generate the Typescript types.
 Use `yarn generate-types-from-jsonschema` to regenerate the type files under `src/generated_types`
+
+## Validation
+
+The validation tool can check the game files and report on errors.
+
+Install it with
+
+```
+  python3 -m venv .venv
+  .venv/bin/python3 -m pip install -r requirements.txt
+  python3 -m validator
+```

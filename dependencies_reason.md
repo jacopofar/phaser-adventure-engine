@@ -2,7 +2,7 @@
 
 Since dependencies tend to explode, or remain when not needed this document tries to explain the purpose of each one fo them in this project.
 
-## Build dependencies
+## JS Build dependencies
 
 These are needed to run the actual content, and go to the user browser.
 For this reason it's important to be very careful about the size.
@@ -10,7 +10,7 @@ For this reason it's important to be very careful about the size.
 - Phaser: the game library to do pretty much everything
 - Axios: to make HTTP requests nicely
 
-## Dev dependencies
+## JS Dev dependencies
 
 These are used to develop and test the application.
 
@@ -28,3 +28,8 @@ These are used to develop and test the application.
 - axios-mock-adapter: mocks axios requests for testing
 - prettier: linting and reformatting
 - json-schema-to-typescript: generates the TS types from JSONschemas
+
+# Python dependencies
+
+- jsonschema: used to validate the files from python
+- black: python code formatting

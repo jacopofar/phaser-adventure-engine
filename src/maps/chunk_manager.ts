@@ -4,6 +4,7 @@ const axios = require("axios").default;
 import { Chunk } from "./chunk";
 import { WorldScene } from "../scenes/main-scene";
 import { resolvePath } from "../utils";
+import { TiledWorldFile } from "../generated_types/tiled_world";
 
 /**
  * The world properties, using the same names as the Tiled JSON for *.world files
@@ -54,7 +55,7 @@ export class ChunkManager {
   }
 
   async loadWorld(worldPath: string): Promise<void> {
-    const worldData = (await axios.get(worldPath)).data;
+    const worldData = (await axios.get(worldPath)).data as TiledWorldFile;
     if (worldData.type !== "world") {
       throw Error(
         `This file is not a world file: ${worldPath}. It has no type=world`

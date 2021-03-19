@@ -17,7 +17,7 @@
                 "type": "array",
                 "items": { "type": "number" }
               },
-              "type": "tilelayer"
+              "type": { "const": "tilelayer" }
             }
           },
           {
@@ -25,9 +25,16 @@
             "properties": {
               "objects": {
                 "type": "array",
-                "items": { "type": "number" }
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "x": { "type": "number" },
+                    "y": { "type": "number" },
+                    "properties": { "type": "object" }
+                  }
+                }
               },
-              "type": "objectgroup"
+              "type": { "const": "objectgroup" }
             }
           }
         ]

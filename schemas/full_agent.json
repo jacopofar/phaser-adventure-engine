@@ -6,7 +6,7 @@
         {
           "type": "object",
           "properties": {
-            "command": "teleport",
+            "command": { "const": "teleport" },
             "x": { "type": "integer" },
             "y": { "type": "integer" },
             "map": { "type": "string" }
@@ -17,8 +17,13 @@
         {
           "type": "object",
           "properties": {
-            "command": "say",
-            "msg": { "type": "string" }
+            "command": { "const": "say" },
+            "msg": {
+              "oneOf": [
+                { "type": "string" },
+                { "type": "array", "items": { "type": "string" } }
+              ]
+            }
           },
           "additionalProperties": false,
           "required": ["command", "msg"]
