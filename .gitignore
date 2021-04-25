@@ -1,6 +1,9 @@
+# python virtualenv
+.venv/
 # build output:
 dist
 
 node_modules
 *.log
+# test coverage report
 coverage
