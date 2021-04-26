@@ -1,5 +1,5 @@
 import { WorldScene } from "../scenes/main-scene";
-import { Pawn, PawnConfig } from "./pawn";
+import { Pawn, PawnConfig, MovementListener } from "./pawn";
 
 type PathOp = "up" | "down" | "right" | "left" | "idle";
 export interface DecorativeAgentConfig extends PawnConfig {
@@ -21,6 +21,12 @@ export class DecorativeAgent {
   }
   get y(): integer {
     return this.pawn.x;
+  }
+  get width(): integer {
+    return this.pawn.width;
+  }
+  get height(): integer {
+    return this.pawn.height;
   }
 
   async load(targetScene: WorldScene, config: DecorativeAgentConfig) {
@@ -55,5 +61,14 @@ export class DecorativeAgent {
   }
   onInteract(cb: () => void) {
     this.pawn.onInteract(cb);
+  }
+  addMoveListener(cb: MovementListener) {
+    this.pawn.on("moving", cb);
+  }
+  removeMoveListener(cb: MovementListener) {
+    this.pawn.removeListener("moving", cb);
+  }
+  onDestroy(cb: () => void) {
+    this.pawn.on("destroy", cb);
   }
 }

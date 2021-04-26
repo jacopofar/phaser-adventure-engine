@@ -15,6 +15,11 @@ export type Command =
   | {
       command: "say";
       msg: string | string[];
+    }
+  | {
+      command: "toast";
+      duration: number;
+      msg: string;
     };
 
 export interface FullAgentConfig {

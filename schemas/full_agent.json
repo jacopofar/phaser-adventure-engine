@@ -27,6 +27,18 @@
           },
           "additionalProperties": false,
           "required": ["command", "msg"]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "command": { "const": "toast" },
+            "duration": { "type": "number" },
+            "msg": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "required": ["command", "msg", "duration"]
         }
       ]
     }

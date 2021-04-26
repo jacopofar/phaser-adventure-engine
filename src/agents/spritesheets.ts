@@ -1,5 +1,3 @@
-const axios = require("axios").default;
-
 let loadeSpritesheets: Record<string, { name: string }> = {};
 
 export const getSpritesheet = async (

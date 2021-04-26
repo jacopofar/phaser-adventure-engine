@@ -2,6 +2,7 @@ import { WorldScene } from "../scenes/main-scene";
 import { getSpritesheet } from "./spritesheets";
 
 export type PathOp = "up" | "down" | "right" | "left" | "idle";
+export type MovementListener = (op: PathOp, x: number, y: number) => void;
 
 export interface PawnConfig {
   x: integer;
@@ -108,6 +109,7 @@ export class Pawn extends Phaser.Physics.Arcade.Sprite {
     if (this.currentState != op && op !== "idle") {
       this.play(this.spritesheet + "_" + op);
     }
+    this.emit("moving", op, this.x, this.y);
     this.currentState = op;
   }
 

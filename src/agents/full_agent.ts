@@ -1,7 +1,9 @@
 import { WorldScene } from "../scenes/main-scene";
-import { DecorativeAgent, DecorativeAgentConfig } from "./decorative_agent";
+import { DecorativeAgent } from "./decorative_agent";
 import { say } from "../agents/commands/dialog";
 import { teleport } from "../agents/commands/teleport";
+import { toast } from "../agents/commands/toast";
+
 import { resolvePath } from "../utils";
 import { FullAgentConfig, Command } from "../generated_types/full_agent";
 
@@ -86,18 +88,20 @@ export class FullAgent {
     this.aspect?.destroy();
   }
   private async run(commands: Command[], other: any = null) {
-    // TODO implement this
     for (let idx = 0; idx < commands.length; idx++) {
       const cmd = commands[idx];
-      if (cmd.command == "say") {
+      if (cmd.command === "say") {
         await say(this.scene, cmd.msg);
         continue;
       }
-      if (cmd.command == "teleport") {
+      if (cmd.command === "teleport") {
         await teleport(this.scene, cmd.map, cmd.x, cmd.y);
         continue;
       }
-      throw new Error("Unknown command " + cmd);
+      if (cmd.command === "toast") {
+        await toast(this.scene, this.aspect, cmd.duration, cmd.msg);
+        continue;
+      }
     }
   }
 }
