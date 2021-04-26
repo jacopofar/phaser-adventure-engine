@@ -13,7 +13,6 @@ export async function toast(
   const padding = 10;
   const maxLength = 200;
   // add a "speech bubble" at the current aspect position
-  // TODO add a triangle or some way to clarify which sprite owns it
   const txt = scene.add
     .text(aspect.x - maxLength / 2, aspect.y - aspect.height, msg, {
       color: "#000000",
@@ -26,18 +25,35 @@ export async function toast(
     // above the graphics
     .setDepth(9000 + 1);
 
-    const graphics = scene.add
+  const graphics = scene.add
     .graphics({
       fillStyle: { color: 0xffffff, alpha: 0.8 },
     })
     .setPosition(txt.x, txt.y)
-    .fillRoundedRect(0, 0, txt.width + padding * 2, txt.height + padding * 2, padding)
+    .fillRoundedRect(
+      0,
+      0,
+      txt.width + padding * 2,
+      txt.height + padding * 2,
+      padding
+    )
+    .fillTriangle(
+      txt.width / 2 - padding * 3,
+      txt.height + padding * 2,
+      txt.width / 2 + padding,
+      txt.height + padding * 2,
+      txt.width / 2 + padding,
+      txt.height + padding * 3
+    )
     .setDepth(9000);
 
   // subscribe to Pawn movements to move the speech bubble accordingly
   const movementCb = (op: PathOp, x: number, y: number) => {
-    graphics.setPosition(x - txt.width / 2 - padding, y - aspect.height * 1.5 - padding);
-    txt.setPosition(x - txt.width / 2, y - aspect.height * 1.5);
+    graphics.setPosition(
+      x - txt.width / 2 - padding,
+      y - aspect.height - txt.height - padding
+    );
+    txt.setPosition(x - txt.width / 2, y - aspect.height - txt.height);
   };
   const destroyToast = () => {
     graphics.destroy();
