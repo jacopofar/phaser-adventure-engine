@@ -1,8 +1,8 @@
 import { WorldScene } from "./scenes/main-scene";
-import { AdventureConfig } from "./index";
+import { GameGlobalConfig } from "./generated_types/game";
 
 export const PhaserConfig = (
-  config: AdventureConfig
+  config: GameGlobalConfig
 ): Phaser.Types.Core.GameConfig => ({
   title: config.gameTitle,
   version: "0.1",

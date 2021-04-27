@@ -10,7 +10,10 @@
     "startY": { "type": "number" },
     "initialWorld": { "type": "string" },
     "playerSpriteHeight": { "type": "number" },
-    "playerSpriteWidth": { "type": "number" }
+    "playerSpriteWidth": { "type": "number" },
+    "backend": { "type": "string" },
+    "tileHeight": { "type": "number" },
+    "tileWidth": { "type": "number" }
   },
   "additionalProperties": false,
   "required": [

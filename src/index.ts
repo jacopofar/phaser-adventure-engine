@@ -7,23 +7,6 @@ import { WorldScene } from "./scenes/main-scene";
 import { GameGlobalConfig } from "./generated_types/game";
 
 /**
- * Data loaded from the game.json
- */
-export type AdventureConfig = {
-  gameTitle: string;
-  gameScreenWidth: integer;
-  gameScreenHeight: integer;
-  playerSpritesheet: string;
-  startX: integer;
-  startY: integer;
-  initialWorld: string;
-  playerSpriteHeight?: integer;
-  playerSpriteWidth?: integer;
-  tileHeightDefault?: integer;
-  tileWidthDefault?: integer;
-};
-
-/**
  * Class to keep the global state of the game.
  *
  */
@@ -39,7 +22,7 @@ export class AdventureData {
   private _gameScreenHeight: integer;
   private _gameScreenWidth: integer;
 
-  constructor(config: AdventureConfig) {
+  constructor(config: GameGlobalConfig) {
     this._playerSpritesheet = config.playerSpritesheet;
     this._startX = config.startX;
     this._startY = config.startY;
@@ -49,8 +32,8 @@ export class AdventureData {
     this._initialWorld = config.initialWorld;
     this._playerSpriteHeight = config.playerSpriteHeight || 32;
     this._playerSpriteWidth = config.playerSpriteWidth || 32;
-    this._tileWidthDefault = config.tileWidthDefault || 32;
-    this._tileHeightDefault = config.tileHeightDefault || 32;
+    this._tileWidthDefault = config.tileWidth || 32;
+    this._tileHeightDefault = config.tileHeight || 32;
   }
   /**
    * Return the path for the player spritesheet
@@ -91,14 +74,14 @@ export class AdventureData {
   static getGameData(scene: WorldScene) {
     return scene.game.registry.get("adventure_data") as AdventureData;
   }
-  static setConfig(game: Phaser.Game, config: AdventureConfig) {
+  static setConfig(game: Phaser.Game, config: GameGlobalConfig) {
     game.registry.set("adventure_data", new AdventureData(config));
   }
 }
 
 window.addEventListener("load", async () => {
   try {
-    const config: AdventureConfig = (await axios.get("/game/game.json"))
+    const config = (await axios.get("/game/game.json"))
       .data as GameGlobalConfig;
     const game = new Phaser.Game(PhaserConfig(config));
     AdventureData.setConfig(game, config);

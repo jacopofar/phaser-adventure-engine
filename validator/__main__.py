@@ -85,7 +85,7 @@ def main(game_folder: Path):
     )
     game_root = read_json(game_folder / "game.json")
     validate_with_schema(game_root, "game")
-    # TODO check playerSpritesheet exists and is an image
+    # TODO check playerSpritesheet exists and is an image with meaningful size...
     world_file = game_root["initialWorld"]
     check_world(Path(world_file))
 

@@ -15,4 +15,7 @@ export interface GameGlobalConfig {
   initialWorld: string;
   playerSpriteHeight?: number;
   playerSpriteWidth?: number;
+  backend?: string;
+  tileHeight?: number;
+  tileWidth?: number;
 }
