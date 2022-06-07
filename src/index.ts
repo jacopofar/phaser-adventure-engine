@@ -83,6 +83,11 @@ window.addEventListener("load", async () => {
   try {
     const config = (await axios.get("/game/game.json"))
       .data as GameGlobalConfig;
+    const ws = new WebSocket(config.backend);
+    ws.onopen = () => {
+      ws.send(JSON.stringify({ type: "starting", version }));
+    };
+
     const game = new Phaser.Game(PhaserConfig(config));
     AdventureData.setConfig(game, config);
   } catch (error) {

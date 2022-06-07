@@ -7,7 +7,8 @@
     "target": "es5",
     "allowJs": true,
     "moduleResolution": "node",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "resolveJsonModule": true
   },
-  "exclude": ["node_modules", "game"]
+  "exclude": ["node_modules", "game", "backend_0"]
 }
