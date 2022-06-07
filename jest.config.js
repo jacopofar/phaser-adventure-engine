@@ -3,4 +3,5 @@ module.exports = {
   testEnvironment: "jsdom",
   roots: ["src"],
   collectCoverage: true,
+  setupFiles: ["jest-canvas-mock"],
 };

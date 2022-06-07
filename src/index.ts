@@ -4,6 +4,7 @@ const axios = require("axios").default;
 import { PhaserConfig } from "./config";
 import { WorldScene } from "./scenes/main-scene";
 
+import { version } from "../package.json";
 import { GameGlobalConfig } from "./generated_types/game";
 
 /**
