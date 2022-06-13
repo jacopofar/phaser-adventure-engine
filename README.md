@@ -1,14 +1,24 @@
-## A game
+## Phaserjs Tiled integration demo
 
-A better title will come later maybe.
+This project defines an engine to run an adventure game in the browser, and implements a demo game with it.
 
-This project defines an engine to run an adventure game in the browser, and implements a game with it.
+The "engine" is written in Typescript and uses Phaser.js 3. It can load Tiled maps and supports world files, directly performing chunk load/unload. Tiled objects are parsed to produce actors in the game (NPCs, items).
+
+Such a game can be completely static, or you can have a backend providing tiles and events on the fly.
+
+The game works on mobile and desktop, using multitouch or keyboard.
+
+Additionally, a Python validator is provided, based on JSONSchema.
 
 The game and the engine are kept separated, the game is in the _game\_\_ folder, the "engine", based on Phaser.js, is in the \_src_ folder. By replacing the game folder with another one, you can run another game. This is to later allow game generation using external scripts, or a backend to deliver generated content.
 
 ## Run locally
 
 Use `yarn install` and then `yarn run dev-serve` to run a local server that will compile and reload on change.
+
+## Tests
+
+Yep, there are test! Just use `yarn test` to see them.
 
 ## Dependencies
 
@@ -30,3 +40,7 @@ Install it with
   .venv/bin/python3 -m pip install -r requirements.txt
   python3 -m validator
 ```
+
+## License
+
+The code itself is MIT licensed and you can copy and modify it as you wish. The game assets are based on art from other people, detailes in the game README.
