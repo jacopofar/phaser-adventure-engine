@@ -4,7 +4,7 @@ This project defines an engine to run an adventure game in the browser, and impl
 
 ![example of what can be done, a colorful simple 2D map](screenshot.png)
 
-The "engine" is written in Typescript and uses Phaser.js 3. It can load Tiled maps and supports world files, directly performing chunk load/unload. Tiled objects are parsed to produce actors in the game (NPCs, items).
+The "engine" is written in Typescript and uses Phaser.js 3. It can load Tiled maps and supports world files, directly performing chunk load/unload. Tiled objects are parsed to produce actors in the game (NPCs, items), stored in their own JSON.
 
 Such a game can be completely static, or you can have a backend providing tiles and events on the fly.
 
@@ -42,6 +42,16 @@ Install it with
   .venv/bin/python3 -m pip install -r requirements.txt
   python3 -m validator
 ```
+
+## State of the project
+
+At the moment this code can handle Tiled orthogonal maps with layers and different tiles, and can load/unload chunks using the world file.
+
+Events can define simple dialogs, teleport the player and movement paths.
+
+I am not actively developing it because I now prefer to use Godot and I found Phaser not very suitable for this, in spite of the excellent Typescript support.
+
+However, feel free to use this work! I'm open to pull requests or linking to projects based on/forking it
 
 ## License
 
