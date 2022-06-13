@@ -13,7 +13,7 @@ export const PhaserConfig = (
   physics: {
     default: "arcade",
     arcade: {
-      debug: true,
+      debug: false,
     },
   },
   scene: [WorldScene],
