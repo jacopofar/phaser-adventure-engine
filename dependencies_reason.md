@@ -15,7 +15,7 @@ For this reason it's important to be very careful about the size.
 These are used to develop and test the application.
 
 - @types/jest: typescript types for Jest tests
-- canvas: necessary to test code using canvas under jsdom
+- jest-canvas-mock: necessary to test code using canvas under jsdom
 - copy-webpack-plugin: copies files as-is from the game folder to the dist
 - html-webpack-plugin: generates the HTML for the page on the fly
 - jest: run tests

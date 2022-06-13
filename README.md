@@ -4,7 +4,6 @@ This project defines an engine to run an adventure game in the browser, and impl
 
 ![example of what can be done, a colorful simple 2D map](screenshot.png)
 
-
 The "engine" is written in Typescript and uses Phaser.js 3. It can load Tiled maps and supports world files, directly performing chunk load/unload. Tiled objects are parsed to produce actors in the game (NPCs, items).
 
 Such a game can be completely static, or you can have a backend providing tiles and events on the fly.
@@ -16,7 +15,6 @@ Additionally, a Python validator is provided, based on JSONSchema.
 The game and the engine are kept separated, the game is in the _game\_\_ folder, the "engine", based on Phaser.js, is in the \_src_ folder. By replacing the game folder with another one, you can run another game. This is to later allow game generation using external scripts, or a backend to deliver generated content.
 
 ## Run locally
-
 
 Use `yarn install` and then `yarn run dev-serve` to run a local server that will compile and reload on change.
 
