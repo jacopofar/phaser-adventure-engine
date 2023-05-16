@@ -82,8 +82,15 @@ export class AdventureData {
 
 window.addEventListener("load", async () => {
   try {
-    const config = (await axios.get("/game/game.json"))
+    const config = (await axios.get("/game01/game.json"))
       .data as GameGlobalConfig;
+      if (config.playerSpritesheet.endsWith(".json")){
+        console.log("Player spritesheet is a JSON, falling back to a PNG with the same name...");
+        // TODO workaround because animation spritesheet as JSON is not supported
+        // just assume there's a PNG with the same name and already valid -_-
+        config.playerSpritesheet = config.playerSpritesheet.replace(".json", ".png");
+      }
+
     const ws = new WebSocket(config.backend);
     ws.onopen = () => {
       ws.send(JSON.stringify({ type: "starting", version }));
